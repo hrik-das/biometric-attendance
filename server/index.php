@@ -21,10 +21,10 @@
             <h4 class="bg-dark text-white py-3">ADMIN LOGIN PANEL</h4>
             <div class="p-4">
                 <div class="mb-3">
-                    <input type="text" name="name" class="form-control shadow-none text-center" placeholder="Username" required>
+                    <input type="text" name="username" class="form-control shadow-none text-center" placeholder="Username" required>
                 </div>
                 <div class="mb-4">
-                    <input type="password" name="pass" class="form-control shadow-none text-center" placeholder="Password" required>
+                    <input type="password" name="password" class="form-control shadow-none text-center" placeholder="Password" required>
                 </div>
                 <button type="submit" name="login" class="btn text-white btn-dark shadow-none">LOGIN</button>
             </div>
