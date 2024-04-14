@@ -2,7 +2,7 @@
     $hostname = "localhost";
     $username = "root";
     $password = "";
-    $database = "";
+    $database = "attendance";
     $connect = mysqli_connect($hostname, $username, $password, $database);
     if(!$connect){
         die("Something went wrong!".mysqli_connect_error());
