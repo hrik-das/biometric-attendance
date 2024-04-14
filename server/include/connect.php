@@ -26,6 +26,39 @@
         return $result;
     }
 
+    /**
+     * In-house functionality for simple CRUD (`INSERT`, `SELECT`, `UPDATE`, `DELETE`) operations
+     * @param string $query An SQL query
+     * @param string $types
+     * @param mixed $vars
+     * @return \mysqli_result|false|int|string
+     * Returns a `\mysqli_result` object or `false` for a sucessful or unsucessful `SELECT`
+     * `$query` respectively, `int` or `string` for no. of affected rows for the other queries
+     */
+    function execCRUD($query, $types, $vars) {
+        $connect = $GLOBALS["connect"];
+        $stmt = mysqli_prepare($connect, $query);
+        if (!$stmt)
+            die("Error: `mysqli_prepare` at Line #31: query: $query");
+        
+        if (!$stmt->bind_param($types, ...$vars))
+            die("Error: `stmt->bind_param` at Line #35: query: $query");
+
+        if (!$stmt->execute()) {
+            $stmt->close();
+            die("Error: `stmt->execute` at Line #38: query: $query");
+        }
+        
+        if ($query[0] == 'S' || $query[0] == 's') {
+            $result = $stmt->get_result();
+        } else {
+            $result = $stmt->affected_rows;
+        }
+        
+        $stmt->close();
+        return $result;
+    }
+
     function insertData($sql, $values, $datatypes){
         $connect = $GLOBALS["connect"];
         if($stmt = mysqli_prepare($connect, $sql)){
