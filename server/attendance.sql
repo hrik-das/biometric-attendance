@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2024 at 06:40 PM
+-- Generation Time: Apr 14, 2024 at 06:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,24 +47,17 @@ INSERT INTO `admin_cred` (`id`, `username`, `password`) VALUES
 --
 
 CREATE TABLE `attendance_log` (
+  `s_no` mediumint(8) UNSIGNED NOT NULL,
   `roll_no` smallint(4) UNSIGNED NOT NULL,
-  `f_name` varchar(20) NOT NULL,
-  `m_name` varchar(20) DEFAULT NULL,
-  `l_name` varchar(20) NOT NULL,
   `date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='RECORDS ONLY PRESENT STUDENTS';
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `semester_map`
+-- Dumping data for table `attendance_log`
 --
 
-CREATE TABLE `semester_map` (
-  `s_no` smallint(4) UNSIGNED NOT NULL,
-  `roll_no` smallint(4) UNSIGNED NOT NULL,
-  `sem` tinyint(1) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Maps roll nos to semesters';
+INSERT INTO `attendance_log` (`s_no`, `roll_no`, `date`) VALUES
+(1, 5150, '2024-04-14');
 
 -- --------------------------------------------------------
 
@@ -75,12 +68,18 @@ CREATE TABLE `semester_map` (
 CREATE TABLE `users_all` (
   `fingerprint_id` smallint(4) UNSIGNED NOT NULL,
   `roll_no` smallint(4) UNSIGNED NOT NULL,
-  `f_name` varchar(20) NOT NULL,
-  `m_name` varchar(20) DEFAULT NULL,
-  `l_name` varchar(20) NOT NULL,
+  `full_name` varchar(30) NOT NULL,
+  `semester` tinyint(1) UNSIGNED NOT NULL,
   `enroll_date` date NOT NULL DEFAULT current_timestamp(),
   `delist_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Information about all users';
+
+--
+-- Dumping data for table `users_all`
+--
+
+INSERT INTO `users_all` (`fingerprint_id`, `roll_no`, `full_name`, `semester`, `enroll_date`, `delist_date`) VALUES
+(1, 5150, 'Plaban', 6, '2024-04-14', NULL);
 
 --
 -- Indexes for dumped tables
@@ -92,10 +91,9 @@ CREATE TABLE `users_all` (
 ALTER TABLE `admin_cred`
   ADD PRIMARY KEY (`id`);
 
+-- Indexes for table `attendance_log`
 --
--- Indexes for table `semester_map`
---
-ALTER TABLE `semester_map`
+ALTER TABLE `attendance_log`
   ADD PRIMARY KEY (`s_no`);
 
 --
@@ -105,26 +103,21 @@ ALTER TABLE `users_all`
   ADD PRIMARY KEY (`fingerprint_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
---
-
---
 -- AUTO_INCREMENT for table `admin_cred`
 --
 ALTER TABLE `admin_cred`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
+-- AUTO_INCREMENT for table `attendance_log`
 --
--- AUTO_INCREMENT for table `semester_map`
---
-ALTER TABLE `semester_map`
-  MODIFY `s_no` smallint(4) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `attendance_log`
+  MODIFY `s_no` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users_all`
 --
 ALTER TABLE `users_all`
-  MODIFY `fingerprint_id` smallint(4) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `fingerprint_id` smallint(4) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
