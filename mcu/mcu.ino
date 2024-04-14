@@ -140,7 +140,7 @@ void send_fingerprint_id(int id) {
     WiFiClient client;
     HTTPClient http;
     
-    postData = "FingerID=" + String(id);
+    postData = "fingerprint_id=" + String(id);
     
     http.begin(client, send_url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
