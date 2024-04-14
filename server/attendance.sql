@@ -86,6 +86,11 @@ INSERT INTO `users_all` (`fingerprint_id`, `roll_no`, `full_name`, `semester`, `
 --
 
 --
+-- Indexes for table `admin_cred`
+--
+ALTER TABLE `admin_cred`
+  ADD PRIMARY KEY (`id`);
+
 -- Indexes for table `attendance_log`
 --
 ALTER TABLE `attendance_log`
@@ -98,10 +103,11 @@ ALTER TABLE `users_all`
   ADD PRIMARY KEY (`fingerprint_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT for table `admin_cred`
 --
+ALTER TABLE `admin_cred`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
 -- AUTO_INCREMENT for table `attendance_log`
 --
 ALTER TABLE `attendance_log`

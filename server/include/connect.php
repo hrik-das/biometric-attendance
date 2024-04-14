@@ -21,7 +21,7 @@
 
     function selectAllData($table){
         $connect = $GLOBALS["connect"];
-        $query = "SELECT * FROM $table";
+        $query = "SELECT * FROM `$table`";
         $result = mysqli_query($connect, $query);
         return $result;
     }
@@ -43,7 +43,6 @@
         }
     }
 
-    
     function selectData($sql, $values, $datatypes){
         $connect = $GLOBALS["connect"];
         if($stmt = mysqli_prepare($connect, $sql)){
