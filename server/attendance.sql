@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 14, 2024 at 12:18 PM
+-- Generation Time: Apr 14, 2024 at 04:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- Database: `attendance`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_cred`
+--
+
+CREATE TABLE `admin_cred` (
+  `id` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_cred`
+--
+
+INSERT INTO `admin_cred` (`id`, `username`, `password`) VALUES
+(1, 'bas', '12345');
 
 -- --------------------------------------------------------
 
@@ -68,6 +87,12 @@ CREATE TABLE `users_all` (
 --
 
 --
+-- Indexes for table `admin_cred`
+--
+ALTER TABLE `admin_cred`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `semester_map`
 --
 ALTER TABLE `semester_map`
@@ -82,6 +107,12 @@ ALTER TABLE `users_all`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `admin_cred`
+--
+ALTER TABLE `admin_cred`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `semester_map`
