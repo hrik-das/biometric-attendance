@@ -37,11 +37,11 @@
             $query = "SELECT * FROM `admin_cred` WHERE `username`=? AND `password`=?";
             $values = [$filterData["username"], $filterData["password"]];
             $datatypes = "ss";
-            $result = selectData($query, $values, $datatypes);
+            $result = execCRUD($query, $datatypes, $values);
             if($result->num_rows == 1){
                 $data = mysqli_fetch_assoc($result);
-                $_SESSION["adminId"] = $data["id"];
                 $_SESSION["adminLogin"] = true;
+                $_SESSION["adminId"] = $data["id"];
                 redirect("dashboard.php");
             }else{
                 alert("error", "Login failed - Invalid Credentials!");

@@ -4,7 +4,7 @@
         echo<<<alert
             <div class="alert $bs_class alert-dismissible fade show custom-alert" role="alert">
                 <strong class="me-3">$message</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>    
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>    
             </div>
         alert;
     }
