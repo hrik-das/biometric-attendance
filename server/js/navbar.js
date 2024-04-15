@@ -2,22 +2,16 @@ function alert(type, message){
     let bs_class = (type == "success") ? "alert-success" : "alert-danger";
     let element = document.createElement("div");
     element.innerHTML = `
-        <div class="alert ${bs_class} alert-dismissible fade show" role="alert">
+        <div class="alert ${bs_class} alert-dismissible fade show custom-alert" role="alert">
             <strong class="me-3">${message}</strong>
             <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>    
         </div>`;
-    if(position == "body"){
-        document.body.append(element);
-        element.classList.add("custom-alert");
-    }else{
-        document.getElementById(position).appendChild(element);
-    }
-    setTimeout(removeAlert, 2000);
+    // setTimeout(removeAlert, 3000);
 }
 
-function removeAlert(){
-    document.getElementsByClassName("alert")[0].remove();
-}
+// function removeAlert(){
+//     document.getElementsByClassName("alert")[0].remove();
+// }
 
 function setActive(){
     let navbar = document.getElementById("navbar");
