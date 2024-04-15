@@ -26,71 +26,37 @@
         return $result;
     }
 
-    function insertData($sql, $values, $datatypes){
+    /**
+     * In-house utility for simple CRUD (`INSERT`, `SELECT`, `UPDATE`, `DELETE`) operations. Refrain
+     * from passing nested subqueries to this function for easier error checking.
+     * @param string $query SQL `INSERT`, `SELECT`, `UPDATE` or `DELETE` query
+     * @param string $types
+     * @param mixed $vars
+     * @return \mysqli_result|false|int|string
+     * Returns a `\mysqli_result` object or `false` for a sucessful or unsucessful `SELECT`
+     * `$query` respectively, `int` or `string` for no. of affected rows for the other queries
+     */
+    function execCRUD($query, $types, $vars) {
         $connect = $GLOBALS["connect"];
-        if($stmt = mysqli_prepare($connect, $sql)){
-            mysqli_stmt_bind_param($stmt, $datatypes, ...$values);
-            if(mysqli_stmt_execute($stmt)){
-                $result = mysqli_stmt_affected_rows($stmt);
-                mysqli_stmt_close($stmt);
-                return $result;
-            }else{
-                mysqli_stmt_close($stmt);
-                die("Query Cannot be Executed - Insert");
-            }
-        }else{
-            die("Query Cannot be Prepared - Insert");
-        }
-    }
+        $stmt = mysqli_prepare($connect, $query);
+        if (!$stmt)
+            die("Error: `mysqli_prepare` at include/connect.php: Line #31: query: $query");
+        
+        if (!$stmt->bind_param($types, ...$vars))
+            die("Error: `stmt->bind_param` at include/connect.php: Line #35: query: $query");
 
-    function selectData($sql, $values, $datatypes){
-        $connect = $GLOBALS["connect"];
-        if($stmt = mysqli_prepare($connect, $sql)){
-            mysqli_stmt_bind_param($stmt, $datatypes, ...$values);
-            if(mysqli_stmt_execute($stmt)){
-                $result = mysqli_stmt_get_result($stmt);
-                mysqli_stmt_close($stmt);
-                return $result;
-            }else{
-                mysqli_stmt_close($stmt);
-                die("Query Cannot be Executed - Select");
-            }
-        }else{
-            die("Query Cannot be Prepared - Select");
+        if (!$stmt->execute()) {
+            $stmt->close();
+            die("Error: `stmt->execute` at include/connect.php: Line #38: query: $query");
         }
-    }
-
-    function updateData($sql, $values, $datatypes){
-        $connect = $GLOBALS["connect"];
-        if($stmt = mysqli_prepare($connect, $sql)){
-            mysqli_stmt_bind_param($stmt, $datatypes, ...$values);
-            if(mysqli_stmt_execute($stmt)){
-                $result = mysqli_stmt_affected_rows($stmt);
-                mysqli_stmt_close($stmt);
-                return $result;
-            }else{
-                mysqli_stmt_close($stmt);
-                die("Query Cannot be Executed - Update");
-            }
-        }else{
-            die("Query Cannot be Prepared - Update");
+        
+        if ($query[0] == 'S' || $query[0] == 's') {
+            $result = $stmt->get_result();
+        } else {
+            $result = $stmt->affected_rows;
         }
-    }
-
-    function deleteData($sql, $values, $datatypes){
-        $connect = $GLOBALS["connect"];
-        if($stmt = mysqli_prepare($connect, $sql)){
-            mysqli_stmt_bind_param($stmt, $datatypes, ...$values);
-            if(mysqli_stmt_execute($stmt)){
-                $result = mysqli_stmt_affected_rows($stmt);
-                mysqli_stmt_close($stmt);
-                return $result;
-            }else{
-                mysqli_stmt_close($stmt);
-                die("Query Cannot be Executed - Delete");
-            }
-        }else{
-            die("Query Cannot be Prepared - Delete");
-        }
+        
+        $stmt->close();
+        return $result;
     }
 ?>
