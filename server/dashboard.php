@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./css/dashboard.css">
     <title>Biometric Attendance - Dashboard</title>
 </head>
-<body>
+<body class="bg-light">
     <!-- Header -->
     <?php include("./include/header.php"); ?>
 
