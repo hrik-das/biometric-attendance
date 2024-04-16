@@ -35,9 +35,7 @@
         if(isset($_POST["login"])){
             $filterData = filteration($_POST);
             $query = "SELECT * FROM `admin_cred` WHERE `username`=? AND `password`=?";
-            $values = [$filterData["username"], $filterData["password"]];
-            $datatypes = "ss";
-            $result = execCRUD($query, $datatypes, $values);
+            $result = execCRUD($query, "ss", $filterData["username"], $filterData["password"]);
             if($result->num_rows == 1){
                 $data = mysqli_fetch_assoc($result);
                 $_SESSION["adminLogin"] = true;

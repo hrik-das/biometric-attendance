@@ -16,3 +16,26 @@
     right: 25px;
     z-index: 11;
 }
+::-webkit-scrollbar{
+    width: 5px;
+}
+::-webkit-scrollbar-track{
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb{
+    background: rgb(0, 0, 0);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb{
+    background: #555555;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type=number]{
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
