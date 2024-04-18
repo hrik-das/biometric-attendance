@@ -4,17 +4,19 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
+    margin-top: 30px;
 }
 .error{
     display: none;
-    background: #ffccd0;
-    width: 25%;
-    position: absolute;
-    top: 25%;
+    width: 350px;
+    position: fixed;
+    top: 22%;
     left: 50%;
     transform: translateX(-50%);
+    background: #ffccd0;
     text-align: center;
     padding: 5px 10px;
     border-radius: 5px;
+    font-weight: 500;
     color: #731922;
 }

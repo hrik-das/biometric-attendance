@@ -16,12 +16,12 @@
     <?php require_once("./include/header.php"); ?>
 
     <!-- Body -->
-    <div class="container-fluid mx-auto px-5 mt-4">
+    <div class="container-fluid mx-auto px-5 mt-3">
         <div class="row">
             <div class="col-lg-12 ms-auto p-4 overflow-hidden">
                 <h3 class="mb-3">Students Information</h3>
                 <div class="card border-0 shadow-sm mb-5">
-                    <div class="card-body">
+                    <div class="card-body mb-1">
                         <div class="text-end mb-4">
                             <button type="button" class="btn btn-dark shadow-none btn-sm" data-bs-toggle="modal" data-bs-target="#add-student"><i class="bi bi-plus-square"></i> Add Student</button>
                         </div>
@@ -39,38 +39,7 @@
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="student-data">
-                                    <tr>
-                                        <td>1</td>
-                                        <td>2023001</td>
-                                        <td>John Doe</td>
-                                        <td>john@example.com</td>
-                                        <td>9876543210</td>
-                                        <td>3rd</td>
-                                        <td>03/09/2023</td>
-                                        <td>2</td>
-                                    </tr>   
-                                    <tr>
-                                        <td>2</td>
-                                        <td>2023001</td>
-                                        <td>John Doe</td>
-                                        <td>john@example.com</td>
-                                        <td>9876543210</td>
-                                        <td>3rd</td>
-                                        <td>04/09/2023</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>2023001</td>
-                                        <td>John Doe</td>
-                                        <td>john@example.com</td>
-                                        <td>9876543210</td>
-                                        <td>3rd</td>
-                                        <td>31/04/2024</td>
-                                        <td>2</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="student-data"></tbody>
                             </table>
                         </div>
                     </div>
