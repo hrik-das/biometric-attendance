@@ -68,13 +68,6 @@ CREATE TABLE `users_all` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Information about all users';
 
 --
--- Dumping data for table `users_all`
---
-
-INSERT INTO `users_all` (`fingerprint_id`, `roll_no`, `full_name`, `email`, `contact`, `semester`, `enlist_date`, `delist_date`) VALUES
-(1, 5150, 'Plaban', NULL, NULL, 6, '2024-04-14', NULL);
-
---
 -- Indexes for dumped tables
 --
 

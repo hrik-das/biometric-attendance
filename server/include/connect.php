@@ -38,28 +38,24 @@
     * `SELECT` `$query` respectively, `int` or `string` for no. of affected rows
     * for the other queries
     */
-    function execCRUD($query, $types, ...$vars) {
+    function execCRUD($query, $types, ...$vars){
         $connect = $GLOBALS["connect"];
         $stmt = mysqli_prepare($connect, $query);
-        if (!$stmt)
-            die("Error: `mysqli_prepare()` at include/connect.php: Line #43:" .
-            "\nquery: $query");
+        if(!$stmt)
+            die("Error: `mysqli_prepare()` at include/connect.php: Line #43:"."\nquery: $query");
         
-        if (!$stmt->bind_param($types, ...$vars))
-            die("Error: `stmt->bind_param()` at include/connect.php: Line #48:" .
-            "\nquery: $query\ntypes: $types\nvars: $vars");
+        if(!$stmt->bind_param($types, ...$vars))
+            die("Error: `stmt->bind_param()` at include/connect.php: Line #48:"."\nquery: $query\ntypes: $types\nvars: $vars");
 
-        if (!$stmt->execute()) {
+        if(!$stmt->execute()){
             $stmt->close();
-            die("Error: `stmt->execute()` at include/connect.php: Line #52:" .
-            "\nquery: $query");
+            die("Error: `stmt->execute()` at include/connect.php: Line #52:"."\nquery: $query");
         }
-        if ($query[0] == "S" || $query[0] == "s"){
+        if($query[0] == "S" || $query[0] == "s"){
             $result = $stmt->get_result();
-        } else {
+        }else{
             $result = $stmt->affected_rows;
         }
-
         $stmt->close();
         return $result;
     }

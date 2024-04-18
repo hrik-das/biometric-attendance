@@ -16,6 +16,7 @@
     <title>Admin Login Panel</title>
 </head>
 <body class="bg-light">
+    <p class="error"></p>
     <div class="login-form text-center rounded bg-white shadow overflow-hidden">
         <form action="index.php" method="post">
             <h4 class="bg-dark text-white py-3">ADMIN LOGIN PANEL</h4>
@@ -42,7 +43,14 @@
                 $_SESSION["adminId"] = $data["id"];
                 redirect("dashboard.php");
             }else{
-                alert("error", "Login failed - Invalid Credentials!");
+                echo "
+                    <script>
+                        let error = document.querySelector('.error');
+                        error.style.display = 'block';
+                        error.innerText = 'Login Failed - Invalid Credentials!';
+                        setTimeout(() => error.style.display = 'none', 3000);
+                    </script>
+                ";
             }
         }
     ?>

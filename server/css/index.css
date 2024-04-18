@@ -5,3 +5,16 @@
     transform: translate(-50%, -50%);
     width: 400px;
 }
+.error{
+    display: none;
+    background: #ffccd0;
+    width: 25%;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #731922;
+}
