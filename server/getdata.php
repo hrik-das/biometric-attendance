@@ -40,8 +40,8 @@ if (isset($_POST["fingerprint_id"])) {
 
 // ADD USER
 else if (isset($_POST["Get_Fingerid"]) && !empty($_SESSION["add-roll-no"])) {
-    $last_enlist_id_arr = mysqli_query($connect, "SELECT LAST_INSERT_ID();");
-    echo "add-id" . $last_enlist_id_arr->fetch_assoc()["LAST_INSERT_ID()"];
+    $enlist_id_arr = mysqli_query($connect, "SELECT LAST_INSERT_ID();");
+    echo "add-id" . $enlist_id_arr->fetch_assoc()["LAST_INSERT_ID()"];
 }
 
 // ADD USER - LAST STEPS
@@ -51,26 +51,8 @@ else if (isset($_POST["confirm_id"]) && !empty($_SESSION["add-roll-no"])) {
 }
 
 // DELETE USER
-else if (/* isset($_POST["DeleteID"]) && */!empty($_SESSION["rm-finger-id"])) {
+else if (isset($_POST["DeleteID"]) && !empty($_SESSION["rm-finger-id"])) {
     echo "del-id" . $_SESSION["rm-finger-id"];
     unset($_SESSION["rm-finger-id"]);
-
-    // ajax backend for user delete (move to concerned file later)
-    // hrik-das
-    $query = "UPDATE `users_all` SET `delist_date` = CURDATE() WHERE `roll_no` = ?";
-    $result = execCRUD($query, "i", $filterData["roll"]);
-
-    $query = "SELECT `fingerprint_id` FROM `users-all` WHERE `roll_no` = ?
-                AND `delist_date` = CURDATE();";
-    $last_delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-
-    $_SESSION["rm-finger-id"] = $last_delist_id_rs->fetch_assoc()["fingerprint_id"];
-
-    while ($_SESSION["rm-finger-id"]) {
-        $_SESSION["sleep-time"] = sleep(1);
-        if ($_SESSION["sleep-time"] /* == WAIT_IO_COMPLETION (synchapi.h) */)
-            die("Couldn't sleep(1): WAIT_IO_COMPLETION");
-    }
-
-    echo $result;
 }
+?>

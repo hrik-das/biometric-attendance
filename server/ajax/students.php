@@ -53,13 +53,23 @@
 
     if(isset($_POST["remove-student"])){
         $filterData = filteration($_POST);
-        $currentDate = date("Y-m-d");
-        $query = "UPDATE `users_all` SET `delist_date`=? WHERE `roll_no`=?";
-        $result = execCRUD($query, "si", $currentDate, $filterData["roll"]);
-        if($result){
-            echo 1;
-        }else{
-            echo 0;
+        
+        $query = "UPDATE `users_all` SET `delist_date` = CURDATE() WHERE `roll_no` = ?";
+        $result = execCRUD($query, "i", $filterData["roll"]);
+
+        $query = "SELECT `fingerprint_id` FROM `users-all`
+                    WHERE `roll_no` = ? AND `delist_date` = CURDATE();";
+        $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
+
+        $_SESSION["rm-finger-id"] = $delist_id_rs->fetch_assoc()["fingerprint_id"];
+
+        while ($_SESSION["rm-finger-id"]) {
+            $_SESSION["sleep-time"] = sleep(1);
+            if ($_SESSION["sleep-time"] /* == WAIT_IO_COMPLETION (synchapi.h) */)
+                die("Couldn't sleep(1): WAIT_IO_COMPLETION");
         }
+
+        // $result = 1 (no. of affected rows = 1)
+        echo $result;
     }
 ?>
