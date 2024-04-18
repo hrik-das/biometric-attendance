@@ -1,5 +1,5 @@
 <?php
-    include("./include/essential.php");
+    require_once("./include/essential.php");
     adminLogin();
 ?>
 <!DOCTYPE html>
@@ -7,13 +7,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php require("./include/include.php"); ?>
+    <?php require_once("./include/include.php"); ?>
     <link rel="stylesheet" href="./css/dashboard.css">
     <title>Biometric Attendance - Dashboard</title>
 </head>
 <body class="bg-light">
     <!-- Header -->
-    <?php include("./include/header.php"); ?>
+    <?php require_once("./include/header.php"); ?>
 
     <!-- Body -->
     <div class="container-fluid mx-auto px-5 mt-5">
@@ -62,6 +62,6 @@
     </div>
 
     <!-- Footer -->
-    <?php include("./include/footer.php"); ?>
+    <?php require_once("./include/footer.php"); ?>
 </body>
 </html>
