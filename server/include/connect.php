@@ -4,12 +4,12 @@
     $password = "";
     $database = "attendance";
     $connect = mysqli_connect($hostname, $username, $password, $database);
-    if (!$connect) {
+    if(!$connect){
         die("Something went wrong!".mysqli_connect_error());
     }
 
-    function filteration($data) {
-        foreach($data as $key => $value) {
+    function filteration($data){
+        foreach($data as $key => $value){
             $value = trim($value);
             $value = stripslashes($value);
             $value = strip_tags($value);
@@ -19,7 +19,7 @@
         return $data;
     }
 
-    function selectAllData($table) {
+    function selectAllData($table){
         $connect = $GLOBALS["connect"];
         $query = "SELECT * FROM `$table`";
         $result = mysqli_query($connect, $query);
