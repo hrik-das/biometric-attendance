@@ -18,7 +18,7 @@
     <!-- Body -->
     <div class="container-fluid mx-auto px-5 mt-5">
         <div class="bg-white shadow rounded pt-5 px-5 mb-4 pb-4">
-            <h2 class="h2 fw-bold text-dark mb-4 fs-3">Dashboard Overview</h2>
+            <h2 class="h2 fw-bold text-dark mb-4 fs-4">Dashboard Overview</h2>
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <div class="custom-success rounded-3 p-4">
@@ -43,7 +43,7 @@
     </div>
     <div class="container-fluid mx-auto px-5 mb-5">
         <div class="bg-white shadow rounded pt-5 px-5 mb-4 pb-4">
-            <h2 class="h2 fw-bold text-dark mb-4 fs-3">Additional Insights</h2>
+            <h2 class="h2 fw-bold text-dark mb-4 fs-4">Additional Insights</h2>
             <div class="row">
                 <div class="col-lg-6 mb-4">
                     <div class="custom-purple rounded-3 p-4">

@@ -26,6 +26,7 @@ function addStudent(){
             if(this.responseText == 1){
                 alert("success", "New Student Added Successfully.");
                 addStudentForm.reset();
+                getStudents();
             }else{
                 alert("error", "Operation Failed!");
             }
@@ -39,6 +40,49 @@ function addStudent(){
     xhr.send(data);
 }
 
-// window.onload = function(){
-//     addStudent();
-// }
+function getStudents(){
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "./ajax/students.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function(){
+        if(xhr.status >= 200 && xhr.status < 300){
+            document.getElementById("student-data").innerHTML = this.responseText;
+        }else{
+            console.error("Request failed with status : ", xhr.status);
+        }
+    }
+    xhr.onerror = function(){
+        console.error("Network error occurred!");
+    }
+    xhr.send("get-students");
+}
+
+function removeStudent(rollNumber){
+    if(confirm(`Are You Sure You want to Delete this Student: (Roll Number - ${rollNumber})?`)){
+        let data = new FormData();
+        data.append("roll", rollNumber);
+        data.append("remove-student", "");
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "./ajax/students.php", true);
+        xhr.onload = function(){
+            if(xhr.status >= 200 && xhr.status < 300){
+                if(this.responseText == 1){
+                    alert("success", "Student Removed Successfully.");
+                    getStudents();
+                }else{
+                    alert("error", "Student Removal Failed!");
+                }
+            }else{
+                console.error("Request failed with status : ", xhr.status);
+            }
+        }
+        xhr.onerror = function(){
+            console.error("Network error occurred!");
+        }
+        xhr.send(data);
+    }
+}
+
+window.onload = function(){
+    getStudents();
+}

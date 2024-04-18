@@ -7,7 +7,7 @@ function alert(type, message){
             <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
     document.body.append(element);
-    // setTimeout(alertRemove, 3000);
+    setTimeout(alertRemove, 3000);
 }
 
 function alertRemove(){

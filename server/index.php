@@ -48,7 +48,7 @@
                         let error = document.querySelector('.error');
                         error.style.display = 'block';
                         error.innerText = 'Login Failed - Invalid Credentials!';
-                        setTimeout(() => error.style.display = 'none', 3000);
+                        // setTimeout(() => error.style.display = 'none', 3000);
                     </script>
                 ";
             }
