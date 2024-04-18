@@ -39,26 +39,25 @@
     * for the other queries
     */
     function execCRUD($query, $types, ...$vars) {
-        $connect = $GLOBALS["connect"];
-        $stmt = mysqli_prepare($connect, $query);
+        $stmt = mysqli_prepare($GLOBALS["connect"], $query);
         if (!$stmt)
             die("Error: `mysqli_prepare()` at include/connect.php: Line #43:"."\nquery: $query");
         
-        if (!$stmt->bind_param($types, ...$vars))
-            die("Error: `stmt->bind_param()` at include/connect.php: Line #48:"."\nquery: $query\ntypes: $types\nvars: $vars");
+        if (!mysqli_stmt_bind_param($stmt, $types, ...$vars))
+            die("Error: `mysqli_stmt_bind_param()` at include/connect.php: Line #48:"."\nquery: $query\ntypes: $types\nvars: $vars");
 
-        if (!$stmt->execute()) {
-            $stmt->close();
-            die("Error: `stmt->execute()` at include/connect.php: Line #52:"."\nquery: $query");
+        if (!mysqli_stmt_close($stmt)) {
+            mysqli_stmt_close($stmt);
+            die("Error: `mysqli_stmt_close()` at include/connect.php: Line #52:"."\nquery: $query");
         }
 
         if ($query[0] == "S" || $query[0] == "s") {
-            $result = $stmt->get_result();
+            $result = mysqli_stmt_get_result($stmt);
         } else {
-            $result = $stmt->affected_rows;
+            $result = mysqli_stmt_affected_rows($stmt);
         }
 
-        $stmt->close();
+        mysqli_stmt_close($stmt);
         return $result;
     }
 ?>
