@@ -1,6 +1,6 @@
 <?php
-require("./include/connect.php");
-require("../include/essential.php");
+require_once("./include/connect.php");
+require_once("../include/essential.php");
 adminLogin();
 
 // ATTENDANCE

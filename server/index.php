@@ -1,6 +1,6 @@
 <?php
-    require("./include/connect.php");
-    require("./include/essential.php");
+    require_once("./include/connect.php");
+    require_once("./include/essential.php");
     session_start();
     if((isset($_SESSION["adminLogin"]) && $_SESSION["adminLogin"] == true)){
         header("Location: dashboard.php");
@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/index.css">
-    <?php require("./include/include.php"); ?>
+    <?php require_once("./include/include.php"); ?>
     <title>Admin Login Panel</title>
 </head>
 <body class="bg-light">

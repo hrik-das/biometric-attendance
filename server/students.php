@@ -1,5 +1,5 @@
 <?php
-    include("./include/essential.php");
+    require_once("./include/essential.php");
     adminLogin();
 ?>
 <!DOCTYPE html>
@@ -7,19 +7,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php require("./include/include.php"); ?>
+    <?php require_once("./include/include.php"); ?>
     <script src="./js/students.js" defer></script>
     <title>Students - Biometric Attendance</title>
 </head>
 <body class="bg-light">
     <!-- Header -->
-    <?php require("./include/header.php"); ?>
+    <?php require_once("./include/header.php"); ?>
 
     <!-- Body -->
     <div class="container-fluid mx-auto px-5 mt-4">
         <div class="row">
             <div class="col-lg-12 ms-auto p-4 overflow-hidden">
-                <h3 class="mb-4">Students Information</h3>
+                <h3 class="mb-3">Students Information</h3>
                 <div class="card border-0 shadow-sm mb-5">
                     <div class="card-body">
                         <div class="text-end mb-4">
@@ -49,7 +49,7 @@
                                         <td>3rd</td>
                                         <td>03/09/2023</td>
                                         <td>2</td>
-                                    </tr>
+                                    </tr>   
                                     <tr>
                                         <td>2</td>
                                         <td>2023001</td>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Add Students Modal -->
-    <div class="modal fade" id="add-student" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade mt-5" id="add-student" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form action="" id="add-student-form">
                 <div class="modal-content">
@@ -128,6 +128,6 @@
     </div>
 
     <!-- Footer -->
-    <?php require("./include/footer.php"); ?>
+    <?php require_once("./include/footer.php"); ?>
 </body>
 </html>
