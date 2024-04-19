@@ -3,8 +3,7 @@ function alert(type, message){
     let element = document.createElement("div");
     element.innerHTML = `
         <div class="alert ${bs_class} alert-dismissible fade show custom-alert" role="alert">
-            <strong class="me-3">${message}</strong>
-            <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+            <p>${message}</p>
         </div>`;
     document.body.append(element);
     setTimeout(alertRemove, 3000);
