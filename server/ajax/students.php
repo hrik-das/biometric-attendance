@@ -3,62 +3,15 @@
     require_once("../include/essential.php");
     adminLogin();
 
-    if(isset($_POST["get-students"])){
-        $i = 1;
-        $data = "";
-        $query = "SELECT * FROM `users_all` WHERE `delist_date` is NULL ORDER BY `fingerprint_id` DESC";
-        $result = mysqli_query($connect, $query);
-        while($row = mysqli_fetch_assoc($result)){
-            // if($row["delist_date"] != null){
-            //     $badge = "
-            //         <span class='badge rounded-pill bg-light text-dark'>
-            //             Delisted
-            //         </span>";
-            // }
-            $data .= "
-                <tr class='align-middle'>
-                    <td>$i</td>
-                    <td>$row[roll_no]</td>
-                    <td>$row[full_name]</td>
-                    <td>$row[email]</td>
-                    <td>$row[contact]</td>
-                    <td>$row[semester]</td>
-                    <td>$row[enlist_date]</td>
-                    <td>
-                        <button type='button' onclick='editStudent($row[roll_no])' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'>
-                            <i class='bi bi-pencil-square'></i>
-                        </button>
-                        <button type='button' onclick='removeStudent($row[roll_no])' class='btn btn-danger shadow-none btn-sm'>
-                            <i class='bi bi-trash'></i>
-                        </button>
-                    </td>
-                </tr>";
-            $i++;
-        }
-        echo $data;
-    }
-
-    if(isset($_POST["get-student"])){
-        $filterData = filteration($_POST);
-        $query = "SELECT * FROM `users_all` WHERE `roll_no`=?";
-        $result = execCRUD($query, "i", $filterData["get-student"]);
-        $studentdata = mysqli_fetch_assoc($result);
-        $data = json_encode($studentdata);
-        echo $data;
-    }
-
     // FOR ADDING NEW STUDENT
     if(isset($_POST["add-student"])){
         $filterData = filteration($_POST);
-        
         // add student data to `users_all` table
         $query = "INSERT INTO `users_all` (`roll_no`, `full_name`, `email`, `contact`, `semester`, `enlist_date`) VALUES (?, ?, ?, ?, ?, ?)";
         $result = execCRUD($query, "isssis", $filterData["roll"], $filterData["name"], $filterData["email"], $filterData["phone"], $filterData["sem"], $filterData["date"]);
-
         // get `fingerprint_id` of same student
         $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
         $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-
         // set `$_SESSION["add-finger-id"]` to be sent to mcu by getdata.php: case 2
         $_SESSION["add-finger-id"] = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
         // fingerprint is being set at mcu-side
@@ -69,14 +22,49 @@
         }
         // while(){} exits when mcu sends cofirmation: `$_POST["confirm_id"] == $_SESSION["add-finger-id"]`
         // and then getdata/php: case 3 runs: `unset($_SESSION["add-finger-id"])`
-        
         echo $result;   // response finally sent to ajax call fom frontend
+    }
+
+    // TO SHOW STUDENT DATA ON THE TABLE
+    if(isset($_POST["get-students"])){
+        $i = 1;    // Initialize variable for showing table Serial Indexing
+        $data = "";    // Initialize variable for append new student data with the previous student data
+        $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";    // Construct the SQL query to select active students
+        $result = mysqli_query($connect, $query);    // Execute the SQL query using mysqli_query with the database connection
+        while($row = mysqli_fetch_assoc($result)){    // Iterate through the query results and format data into HTML table rows
+            // Concatenate HTML table row for each student
+            $data .= "
+                <tr class='align-middle'>
+                    <td>$i</td>
+                    <td>{$row['roll_no']}</td>
+                    <td>{$row['full_name']}</td>
+                    <td>{$row['email']}</td>
+                    <td>{$row['contact']}</td>
+                    <td>{$row['semester']}</td>
+                    <td>{$row['enlist_date']}</td>
+                    <td>
+                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                    </td>
+                </tr>";
+            $i++;    // Increasing by 1 for New Rows
+        }
+        echo $data;    // Echo the concatenated HTML table rows representing student information
+    }
+
+    // TO SHOW STUDENT PREVIOUS DATA ON THE INPUT FIELD
+    if(isset($_POST["get-student"])){
+        $filterData = filteration($_POST);    // Filter the submitted form data for security
+        $query = "SELECT * FROM `users_all` WHERE `roll_no`=?";    // Construct the SQL query to select student data based on roll number
+        $result = execCRUD($query, "i", $filterData["get-student"]);    // Execute the SQL query using execCRUD function with the roll number parameter
+        $studentdata = mysqli_fetch_assoc($result);    // Fetch the student data from the query result
+        $data = json_encode($studentdata);    // Convert the student data to JSON format
+        echo $data;    // Echo the JSON data representing the student information
     }
 
     // FOR DELETING STUDENT
     if(isset($_POST["remove-student"])){
         $filterData = filteration($_POST);
-        
         // set 
         $query = "UPDATE `users_all` SET `delist_date`=CURDATE() WHERE `roll_no`=?";
         $result = execCRUD($query, "i", $filterData["roll"]);
@@ -107,14 +95,12 @@
             if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
                 die("Couldn't sleep(1): WAIT_IO_COMPLETION");
         }
-
         $_SESSION["add-finger-id"] = $_POST["update-fingerprint"];
         while($_SESSION["add-finger-id"]){
             $_SESSION["sleep-192"] = sleep(1);
             if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
                 die("Couldn't sleep(1): WAIT_IO_COMPLETION");
         }
-
         echo 1;
     }
 ?>

@@ -33,16 +33,18 @@
     </div>
 
     <?php
+        // USER LOGIN
         if(isset($_POST["login"])){
-            $filterData = filteration($_POST);
-            $query = "SELECT * FROM `admin_cred` WHERE `username`=? AND `password`=?";
-            $result = execCRUD($query, "ss", $filterData["username"], $filterData["password"]);
-            if(mysqli_num_rows($result) == 1){
-                $data = mysqli_fetch_assoc($result);
-                $_SESSION["adminLogin"] = true;
-                $_SESSION["adminId"] = $data["id"];
-                redirect("dashboard.php");
+            $filterData = filteration($_POST);    // Filter the submitted form data for security
+            $query = "SELECT * FROM `admin_cred` WHERE `username`=? AND `password`=?";    // Construct the SQL query to select admin credentials
+            $result = execCRUD($query, "ss", $filterData["username"], $filterData["password"]);    // Execute the SQL query using execCRUD function with username and password parameters
+            if(mysqli_num_rows($result) == 1){    // Check if exactly one row is returned from the query
+                $data = mysqli_fetch_assoc($result);    // Fetch the admin data from the query result
+                $_SESSION["adminLogin"] = true;    // Set session variables for adminLogin = true
+                $_SESSION["adminId"] = $data["id"];    // Set session variables for adminId = userId
+                redirect("dashboard.php");    // Redirect to the dashboard
             }else{
+                // Display error message using JavaScript for invalid credentials
                 echo "<script>
                           let error = document.querySelector('.error');
                           error.style.display = 'block';
