@@ -37,20 +37,18 @@
             $filterData = filteration($_POST);
             $query = "SELECT * FROM `admin_cred` WHERE `username`=? AND `password`=?";
             $result = execCRUD($query, "ss", $filterData["username"], $filterData["password"]);
-            if($result->num_rows == 1){
+            if(mysqli_num_rows($result) == 1){
                 $data = mysqli_fetch_assoc($result);
                 $_SESSION["adminLogin"] = true;
                 $_SESSION["adminId"] = $data["id"];
                 redirect("dashboard.php");
             }else{
-                echo "
-                    <script>
-                        let error = document.querySelector('.error');
-                        error.style.display = 'block';
-                        error.innerText = 'Login Failed - Invalid Credentials!';
-                        // setTimeout(() => error.style.display = 'none', 3000);
-                    </script>
-                ";
+                echo "<script>
+                          let error = document.querySelector('.error');
+                          error.style.display = 'block';
+                          error.innerText = 'Login Failed - Invalid Credentials!';
+                          setTimeout(() => error.style.display = 'none', 3000);
+                      </script>";
             }
         }
     ?>

@@ -7,14 +7,12 @@
 }
 .custom-alert{
     position: fixed;
-    top: 80px;
-    right: 25px;
-}
-.custom-alert{
-    position: fixed;
     top: 85px;
     right: 25px;
     z-index: 10;
+    height: 60px;
+    font-weight: 500;
+    width: 380px;
 }
 ::-webkit-scrollbar{
     width: 5px;
