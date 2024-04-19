@@ -126,7 +126,7 @@ function updateStudent(){
     data.append("sem", editStudentForm.elements["sem"].value);
     data.append("date", editStudentForm.elements["date"].value);
     data.append("id", editStudentForm.elements["id"].value);
-    data.append("update-student", "");
+    data.append("update-details", "");
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "./ajax/students.php", true);
     xhr.onload = function(){
