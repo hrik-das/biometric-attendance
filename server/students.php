@@ -18,11 +18,12 @@
     <!-- Body -->
     <div class="container-fluid mx-auto px-5 mt-3">
         <div class="row">
-            <div class="col-lg-12 ms-auto p-4 overflow-hidden">
-                <h3 class="mb-3">Students Information</h3>
-                <div class="card border-0 shadow-sm mb-5">
-                    <div class="card-body mb-1">
-                        <div class="text-end mb-4">
+            <div class="col-12 ms-auto p-4 overflow-hidden">
+                <h3 class="mb-4">Students Information</h3>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body mt-2">
+                        <div class="mb-4 d-flex justify-content-end">
+                            <input type="text" class="form-control-sm shadow-none w-25 me-3" oninput="searchStudent(this.value)" placeholder="Search Student">
                             <button type="button" class="btn btn-dark shadow-none btn-sm" id="add-btn" data-bs-toggle="modal" data-bs-target="#add-student"><i class="bi bi-plus-square"></i> Add Student</button>
                         </div>
                         <div class="table-responsive-lg" style="height: 350px; overflow-y: scroll;">

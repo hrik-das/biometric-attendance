@@ -151,6 +151,25 @@ function updateStudent(){
     xhr.send(data);
 }
 
+function searchStudent(value){
+    console.log(value);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "./ajax/students.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function(){
+        if(xhr.status >= 200 && xhr.status < 300){
+            console.log(this.responseText);
+            document.getElementById("student-data").innerHTML = this.responseText;
+        }else{
+            console.error("Request failed with status : ", xhr.status);
+        }
+    }
+    xhr.onerror = function(){
+        console.error("Network error occurred!");
+    }
+    xhr.send("search-student&value="+value);
+}
+
 window.onload = function(){
     getStudents();
 }

@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid mx-auto px-5 mb-5">
+    <div class="container-fluid mx-auto px-5 mb-5 pb-1">
         <div class="bg-white shadow rounded pt-5 px-5 mb-4 pb-4">
             <h2 class="h2 fw-bold text-dark mb-4 fs-4">Additional Insights</h2>
             <div class="row">
