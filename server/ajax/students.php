@@ -140,6 +140,7 @@
         $result = execCRUD($query, "i", $filterData["semester"]);
         $i = 1;
         $data = "";
+        $_SESSION["sem"] = $filterData["semester"];
         if(mysqli_num_rows($result) == 0){
             echo "<b>No data Found!</b>";
             exit();
@@ -166,6 +167,57 @@
     }
 
     if(isset($_POST["show-data"])){
-        
+        $filterData = filteration($_POST);
+        $i = 1;
+        $data = "";
+        $date = "";
+        if($filterData["data"] == "all"){
+            if($_SESSION["sem"] == null){
+                $query = "SELECT * FROM `users_all` ORDER BY `fingerprint_id` DESC";
+            }else{
+                $query = "SELECT * FROM `users_all` WHERE `semester`=? ORDER BY `fingerprint_id` DESC";
+            }
+        }else if($filterData["data"] == "enlist"){
+            if($_SESSION["sem"] == null){
+                $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
+            }else{
+                $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
+            }
+        }else{
+            if($_SESSION["sem"] == null){
+                $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
+            }else{
+                $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
+            }
+        }
+        $result = ($_SESSION["sem"] == null) ? mysqli_query($connect, $query) : execCRUD($query, "i", $_SESSION["sem"]);
+        if(mysqli_num_rows($result) < 0){
+            echo "<b>No Data Found!</b>";
+            exit();
+        }
+        while($row = mysqli_fetch_assoc($result)){
+            if($row["delist_date"] == null){
+                $date = "Nil";
+            }else{
+                $date = $row["delist_date"];
+            }
+            $data .= "
+                <tr class='align-middle'>
+                    <td>$i</td>
+                    <td>{$row['roll_no']}</td>
+                    <td>{$row['full_name']}</td>
+                    <td>{$row['email']}</td>
+                    <td>{$row['contact']}</td>
+                    <td>{$row['semester']}</td>
+                    <td>{$row['enlist_date']}</td>
+                    <td>$date</td>
+                    <td>
+                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                    </td>
+                </tr>";
+            $i++;
+        }
+        echo $data;
     }
 ?>
