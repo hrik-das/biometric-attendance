@@ -20,11 +20,33 @@
         <div class="row">
             <div class="col-12 ms-auto p-4 overflow-hidden">
                 <h3 class="mb-4">Students Information</h3>
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-body mt-2">
-                        <div class="mb-4 d-flex justify-content-end">
-                            <input type="text" class="form-control-sm shadow-none w-25 me-3" oninput="searchStudent(this.value)" placeholder="Search Student">
-                            <button type="button" class="btn btn-dark shadow-none btn-sm" id="add-btn" data-bs-toggle="modal" data-bs-target="#add-student"><i class="bi bi-plus-square"></i> Add Student</button>
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <select class="form-select-sm p-1" onchange="showSemester(this.value)" id="semester">
+                                        <option selected>Semester</option>
+                                        <option value="1">1st Sem</option>
+                                        <option value="2">2nd Sem</option>
+                                        <option value="3">3rd Sem</option>
+                                        <option value="4">4th Sem</option>
+                                        <option value="5">5th Sem</option>
+                                        <option value="6">6th Sem</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select class="form-select-sm p-1" id="course" onchange="showStudent(this.value)">
+                                        <option value="all">All Data</option>
+                                        <option value="enlist" selected>Enlist Data</option>
+                                        <option value="delist">Delist Data</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <input type="text" class="form-control-sm shadow-none me-3" oninput="searchStudent(this.value)" placeholder="Search Student">
+                                <button type="button" class="btn btn-dark btn-sm shadow-none" id="add-btn" data-bs-toggle="modal" data-bs-target="#add-student"><i class="bi bi-plus-square"></i> Add Student</button>
+                            </div>
                         </div>
                         <div class="table-responsive-lg" style="height: 350px; overflow-y: scroll;">
                             <table class="table table-hover border text-center">
@@ -36,7 +58,8 @@
                                         <th scope="col">Email</th>
                                         <th scope="col">Phone</th>
                                         <th scope="col">Semester</th>
-                                        <th scope="col">Date</th>
+                                        <th scope="col">Enlist Date</th>
+                                        <th scope="col">Delist Date</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
