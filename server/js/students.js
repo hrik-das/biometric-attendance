@@ -64,7 +64,7 @@ function getStudents(){
     xhr.onerror = function(){
         console.error("Network error occurred!");
     }
-    xhr.send("get-students");
+    xhr.send("get-all-enlisted");
 }
 
 function removeStudent(rollNumber){
@@ -168,7 +168,7 @@ function searchStudent(value){
     xhr.send("search-student&value="+value);
 }
 
-function showSemester(sem){
+function selectSemester(sem){
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "./ajax/students.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -182,10 +182,10 @@ function showSemester(sem){
     xhr.onerror = function(){
         console.error("Network error occurred!");
     }
-    xhr.send("show-semester&semester="+sem);
+    xhr.send("dropdown-sem="+sem);
 }
 
-function showStudent(data){
+function selectRegStatus(regStatus){
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "./ajax/students.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -199,7 +199,7 @@ function showStudent(data){
     xhr.onerror = function(){
         console.error("Network error occurred!");
     }
-    xhr.send("show-data&data="+data);
+    xhr.send("dropdown-reg-status="+regStatus);
 }
 
 window.onload = function(){

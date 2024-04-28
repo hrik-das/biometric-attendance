@@ -25,21 +25,21 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="d-flex">
                                 <div class="me-3">
-                                    <select class="form-select-sm p-1" onchange="showSemester(this.value)" id="semester">
-                                        <option selected>Semester</option>
-                                        <option value="1">1st Sem</option>
-                                        <option value="2">2nd Sem</option>
-                                        <option value="3">3rd Sem</option>
-                                        <option value="4">4th Sem</option>
-                                        <option value="5">5th Sem</option>
-                                        <option value="6">6th Sem</option>
+                                    <select class="form-select-sm p-1" onchange="selectSemester(this.value)" id="semester">
+                                        <option value="all" selected>Semester</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <select class="form-select-sm p-1" id="course" onchange="showStudent(this.value)">
-                                        <option value="all">All Data</option>
-                                        <option value="enlist" selected>Enlist Data</option>
-                                        <option value="delist">Delist Data</option>
+                                    <select class="form-select-sm p-1" onchange="selectRegStatus(this.value)" id="reg-status">
+                                        <option value="enlist" selected>Enlisted</option>
+                                        <option value="delist">Delisted</option>
+                                        <option value="all">All</option>
                                     </select>
                                 </div>
                             </div>

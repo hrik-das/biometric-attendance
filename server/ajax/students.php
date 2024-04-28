@@ -25,8 +25,14 @@
         echo $result;   // response finally sent to ajax call fom frontend
     }
 
-    // TO SHOW STUDENT DATA ON THE TABLE
-    if(isset($_POST["get-students"])){
+    // TO SHOW ALL ENLISTED STUDENT DATA ON THE TABLE ON LOAD
+    if(isset($_POST["get-all-enlisted"])){
+        // On page load, set `$_SESSION["dropdown"]` to the same default values as
+        // `/students.php:39:<select ... id="reg-status">` and
+        // `/students.php:28:<select ... id="semester">`
+        // "UTILITY" variable
+        $_SESSION["dropdown-sem"] = "all";
+        $_SESSION["dropdown-reg-status"] = "enlist";
         $i = 1;    // Initialize variable for showing table Serial Indexing
         $data = "";    // Initialize variable for append new student data with the previous student data
         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";    // Construct the SQL query to select active students
@@ -42,7 +48,7 @@
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
-                    <td>Nil</td>
+                    <td>NIL</td>
                     <td>
                         <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
                         <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
@@ -133,14 +139,28 @@
         echo $data;
     }
 
-    if(isset($_POST["show-semester"])){
+    if(isset($_POST["dropdown-sem"])){
         $filterData = filteration($_POST);
-        $query = "SELECT * FROM `users_all` WHERE `semester`=?";
-        // Execute the query using execCRUD function
-        $result = execCRUD($query, "i", $filterData["semester"]);
+        $_SESSION["dropdown-sem"] = $filterData["dropdown-sem"];
+
+        $query = "SELECT * FROM `users_all` WHERE `semester`";
+
+        $query .= match ($filterData["dropdown-sem"]) {
+            "all" => " LIKE \"_\"", // match any/all semesters
+            default => " = " . $filterData["dropdown-sem"],
+        };
+
+        $query .= match ($_SESSION["dropdown-reg-status"]) {
+            "enlist" => " AND `delist_date` IS NULL",
+            "delist" => " AND `delist_date` IS NOT NULL",
+            "all" => "",
+        };
+
+        $query .= " ORDER BY `fingerprint_id`;";
+        
+        $result = mysqli_query($connect, $query);
         $i = 1;
         $data = "";
-        $_SESSION["sem"] = $filterData["semester"];
         if(mysqli_num_rows($result) == 0){
             echo "<b>No data Found!</b>";
             exit();
@@ -155,7 +175,7 @@
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
-                    <td>Nil</td>
+                    <td>NIL</td>
                     <td>
                         <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
                         <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
@@ -166,32 +186,50 @@
         echo $data;
     }
 
-    if(isset($_POST["show-data"])){
+    if(isset($_POST["dropdown-reg-status"])){
         $filterData = filteration($_POST);
         $i = 1;
         $data = "";
         $date = "";
-        if($filterData["data"] == "all"){
-            if($_SESSION["sem"] != null){
-                $query = "SELECT * FROM `users_all` WHERE `semester`=? ORDER BY `fingerprint_id` DESC";
-            }else{
-                $query = "SELECT * FROM `users_all` ORDER BY `fingerprint_id` DESC";
-            }
-        }else if($filterData["data"] == "enlist"){
-            if($_SESSION["sem"] != null){
-                $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-            }else{
-                $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-            }
-        }else{
-            if($_SESSION["sem"] != null){
-                $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-            }else{
-                $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-            }
-        }
-        $result = ($_SESSION["sem"] != null) ? execCRUD($query, "i", $_SESSION["sem"]) : mysqli_query($connect, $query);
-        if(mysqli_num_rows($result) < 0){
+        $_SESSION["dropdown-reg-status"] = $filterData["dropdown-reg-status"];
+        
+        $query = "SELECT * FROM `users_all` WHERE `semester`";
+        
+        $query .= match ($_SESSION["dropdown-sem"]) {
+            "all" => " LIKE \"_\"", // match any/all semesters
+            default => " = " . $_SESSION["dropdown-sem"],
+        };
+        
+        $query .= match ($filterData["dropdown-reg-status"]) {
+            "enlist" => " AND `delist_date` IS NULL",
+            "delist" => " AND `delist_date` IS NOT NULL",
+            "all" => "",
+        };
+        
+        $query .= " ORDER BY `fingerprint_id` DESC;";
+
+        // if($filterData["regStatus"] == "all"){
+        //     if($_SESSION["sem"] != null){
+        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? ORDER BY `fingerprint_id` DESC";
+        //     }else{
+        //         $query = "SELECT * FROM `users_all` ORDER BY `fingerprint_id` DESC";
+        //     }
+        // }else if($filterData["regStatus"] == "enlist"){
+        //     if($_SESSION["sem"] != null){
+        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
+        //     }else{
+        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
+        //     }
+        // }else{
+        //     if($_SESSION["sem"] != null){
+        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
+        //     }else{
+        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
+        //     }
+        // }
+        // $result = ($_SESSION["sem"] != null) ? execCRUD($query, "i", $_SESSION["sem"]) : mysqli_query($connect, $query);
+        $result = mysqli_query($connect, $query);
+        if(mysqli_num_rows($result) == 0){
             echo "<b>No Data Found!</b>";
             exit();
         }
@@ -199,7 +237,7 @@
             if($row["delist_date"] != null){
                 $date = $row["delist_date"];
             }else{
-                $date = "Nil";
+                $date = "NIL";
             }
             $data .= "
                 <tr class='align-middle'>
