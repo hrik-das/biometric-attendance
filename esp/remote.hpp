@@ -8,123 +8,136 @@
 #include "connection.hpp"
 
 extern Adafruit_SSD1306 display;
-extern const char* send_url;
+extern String send_url;
 
-enum class Action : uint8_t {
+/// @brief Denotes any of the special operations enlist, delist, or update
+/// that needs to be done for a user.
+enum class Operation : u8 {
+    /// @brief Denotes storing a fingerprint in the sensor library.
     Enlist,
+    /// @brief Denotes deleting a fingerprint from the sensor library.
     Delist,
+    /// @brief Denotes updating a fingerprint in the sensor library.
     Update,
 };
 
-/// @brief Checks if the registered `Action` needs to be taken/run.
-/// @param action `[IN]` The registered `Action` you're interested to check
-/// for. Can be any one of `Action::Enlist`, `Action::Delist` or `Action::Update`.
+/// @brief Checks if an `Operation` needs to be done.
+/// @param op `[OUT]` Will hold the operation that needs to be done (either
+/// `Operation::Enlist`, `Operation::Delist`, or `Operation::Update`).
 /// @param loc `[OUT]` Will hold the location where user's fingerprint
-/// is to be stored (`Action::Enlist`), deleted from (`Action::Delist`),
-/// or updated at (`Action::Update`).
-/// @return `true` if he registered `Action` needs to be taken/run,
-/// `false` otherwise.
-bool check_action(const Action action, uint16_t *loc)
+/// is to be stored at (`Operation::Enlist`), deleted from (`Operation::Delist`),
+/// or updated at (`Operation::Update`).
+/// @param roll `[OUT]` Will hold the Roll No. of concerned user.
+/// @return `true` if an `Operation` needs to be done, `false` otherwise.
+bool check_EDU(Operation *op, u16 *loc, String *roll)
 {
-    Serial.print(F("remote.hpp:check_action:"));
-
-    String _action;
-    switch (action) {
-        case Action::Enlist: _action = "enlist";
-        case Action::Delist: _action = "delist";
-        case Action::Update: _action = "update";
-    }
-    
-    Serial.println(_action);
+    Serial.print(F("remote.hpp:check_EDU"));
 
     WiFiClient client;
     HTTPClient http;
-    String postData = "check-" + _action + "=";
+    String postData = "check-edu=";
 
     verify_conn();
 
-    http.begin(client, String(send_url));
+    http.begin(client, send_url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
     int httpCode = http.POST(postData);
     String payload = http.getString();
     http.end();
 
-    Serial.print(F("Request payload:\n")); Serial.println(postData);
+    Serial.print(F("Request payload: ")); Serial.println(postData);
     Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
+    Serial.print(F("Response payload: ")); Serial.println(payload);
 
     if (payload.isEmpty())
         // Server did not return anything, nothing to do.
         return false;
-    
+
+    *op = [&payload] { switch (payload.substring(0, 1)[0]) {
+        case 'E': return Operation::Enlist;
+        case 'D': return Operation::Delist;
+        case 'U': return Operation::Update;
+        }} ();
+
+    u8 idx_roll = payload.indexOf('R');
+
     // [sensor library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]
-    *loc = payload.toInt() - 1;
+    *loc = payload.substring(1, idx_roll).toInt() - 1;
+    *roll = payload.substring(idx_roll + 1);
 
-    Serial.print(F("Response payload: [1 + Template Location]: "));
-    Serial.println(payload);
-    Serial.print(F("User to be ")); Serial.print(_action);
-    Serial.print(F("ed at Location: ")); Serial.println(*loc);
+    Serial.print([&op] { switch (*op) {
+        case Operation::Enlist: return "Enlist";
+        case Operation::Delist: return "Delist";
+        case Operation::Update: return "Update";
+    }} ());
+    Serial.print(F(" fingerprint of Roll No. ")); Serial.print(*roll);
+    Serial.print(F(" at Location: ")); Serial.println(*loc);
+    
     return true;
-} // bool check_action(const Action _action, uint16_t *loc)
+} // bool check_EDU(Operation *op, u16 *loc, u16 *roll)
 
-/// @brief Sends confirmation message regarding whether the requested `Action`
-/// was successfully done at location `loc` or not. Call after:
-/// `uint8_t enlist (const uint16_t &loc, Adafruit_Fingerprint &sensor)` (in 
-/// case of `Action::Enlist`), `uint8_t delist (const uint16_t &loc,
-/// Adafruit_Fingerprint &sensor)` (in case of `Action::Delist`), or `uint8_t
-/// update (const uint16_t &loc, Adafruit_Fingerprint &sensor)` (in case of
-/// `Action::Update`).
+/// @brief Sends confirmation message regarding whether the requested `Operation`
+/// for Roll No. `roll` was successfully done at location `loc` or not. Call after:
+/// `u8 enlist (const u16 &loc, Adafruit_Fingerprint &sensor)` (in case of 
+/// `Operation::Enlist`), `u8 delist (const u16 &loc, Adafruit_Fingerprint &sensor)`
+/// (in case of `Operation::Delist`), or `u8 update (const u16 &loc, Adafruit_Fingerprint
+/// &sensor)` (in case of `Operation::Update`).
+/// @param op `[IN]` `Operation` whose confirmation status is to be sent
 /// @param loc `[IN]` Location at which user's fingerprint was to be manipulated.
+/// @param roll `[IN]` Roll No. of the user whose fingerprint was to be manipulated.
 /// @param success `[IN]` Set to `true` for successful manipulation, `false` otherwise.
-void confirm_action(const Action action, const uint16_t loc, bool success)
+void confirm_EDU(const Operation op, const u16 loc, const String roll, const bool success)
 {
-    Serial.print(F("remote_actions.cxx:confirm_action:"));
+    Serial.print(F("remote.hpp:confirm_EDU:"));
 
-    String _action;
-    switch (action) {
-        case Action::Enlist: _action = "enlist";
-        case Action::Delist: _action = "delist";
-        case Action::Update: _action = "update";
-    }
+    String operation = [&op] { switch (op) {
+        case Operation::Enlist: return "ENLIST";
+        case Operation::Delist: return "DELIST";
+        case Operation::Update: return "UPDATE";
+        }} ();
 
-    Serial.println(_action);
+    Serial.println(operation);
 
     WiFiClient client;
     HTTPClient http;
-    String postData = _action + "-";
+    String postData = "confirm-edu=";
 
-    Serial.print(F("Sending ")); Serial.print(_action); Serial.print(F(" "));
+    display.clearDisplay();
+    display.setCursor(28, 2); display.print(operation);
+    display.setCursor(22, 20);
+    Serial.print(F("Sending ")); Serial.print(operation); Serial.print(F(" "));
+
     if (success) {
         postData += "ok";
-        display.clearDisplay();
-        display.setCursor(16, 24); display.print(_action);
-        display.setCursor(84, 24); display.print(F("!"));
-        display.display();
-        delay(1000);
-        Serial.print(F("SUCCESS"));
+        display.print(F("SUCCESS")); Serial.print(F("SUCCESS"));
     } else {
         postData += "err";
-        Serial.print(F("FAILURE"));
+        display.print(F("FAILURE")); Serial.print(F("FAILURE"));
     }
-    // [sensor library : server database] `Fingerprint_ID` (Template
-    // Location) mapping is [`N`: `N + 1`]
-    // ultimately sent index is `$(_action)-ok=`/`$(_action)-err=`
-    postData += "=" + String(loc + 1);
-
-    Serial.print(F(" message for Location: ")); Serial.println(loc);
+    
+    display.setTextSize(3);
+    display.setCursor((128 - 18 * (roll.length() + 1)) >> 1, 38);
+    display.print(F("#")); display.print(roll);
+    display.display();
+    display.setTextSize(2);
+    Serial.print(F(" message for Roll No. ")); Serial.print(roll);
+    Serial.print(F(" at Location: ")); Serial.println(loc);
 
     verify_conn();
     
-    http.begin(client, String(send_url));
+    http.begin(client, send_url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
     int httpCode = http.POST(postData);
     String payload = http.getString();
     http.end();
 
-    Serial.print(F("Request payload:\n")); Serial.println(postData);
+    Serial.print(F("Request payload: ")); Serial.println(postData);
     Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
-} // void confirm_action(const Action action, const uint16_t loc, bool success)
+    Serial.print(F("Response payload: ")); Serial.println(payload);
+    delay(2000);
+} // void confirm_EDU(const Operation op, const u16 loc, const String roll, const bool success)
 
 #endif // _REMOTE_HPP

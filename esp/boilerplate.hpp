@@ -19,7 +19,7 @@ void showLocalErrorMsg()
 /// the position `(32, 0)`) 1-bit image, using the `WHITE` color for
 /// `1` second.
 /// @param bitmap Byte array with monochrome bitmap
-void draw64x64Bitmap(const uint8_t bitmap[])
+void draw64x64Bitmap(const u8 bitmap[])
 {
     display.clearDisplay();
     display.drawBitmap(33, 0, bitmap, 64, 64, WHITE);

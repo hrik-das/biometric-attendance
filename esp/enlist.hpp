@@ -18,11 +18,11 @@ extern Adafruit_SSD1306 display;
 /// make available in caller scope. Should have same name as param.
 /// @return `FINGERPRINT_OK` if user was sucessfully added. Not `FINGERPRINT_OK`
 /// otherwise. `FINGERPRINT_TIMEOUT` if function waited for 6 full seconds.
-uint8_t process_image(const uint8_t slot, Adafruit_Fingerprint &sensor)
+u8 process_image(const u8 slot, Adafruit_Fingerprint &sensor)
 {
     Serial.print(F("enlist.hpp:process_image:slot - ")); Serial.println(slot);
-    uint8_t image = ~FINGERPRINT_OK;
-    uint8_t timeout = 6;
+    u8 image = ~FINGERPRINT_OK;
+    u8 timeout = 6;
     Ticker timer;
 
     timer.attach_ms(1000, [&timeout] { --timeout; });
@@ -87,7 +87,7 @@ User took too long to enroll"));
     // function` warning (`-Werror=return-type`)
     // will never run
     std::abort();
-} // uint8_t process_image(const uint8_t slot, Adafruit_Fingerprint &sensor)
+} // u8 process_image(const u8 slot, Adafruit_Fingerprint &sensor)
 
 /// @brief Enroll a new user at library location `loc`.
 /// @param loc `[IN]` Location where new user's fingerprint is to be stored.
@@ -96,11 +96,11 @@ User took too long to enroll"));
 /// @return `FINGERPRINT_OK` if user's fingerprint was sucessfully created and
 /// stored. Not `FINGERPRINT_OK` otherwise. `FINGERPRINT_TIMEOUT` if user took
 /// too much time in the process.
-uint8_t enlist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
 {
     Serial.println(F("enlist.hpp:enlist"));
     // SLOT 1
-    if (uint8_t res = process_image(1, sensor) != FINGERPRINT_OK)
+    if (u8 res = process_image(1, sensor) != FINGERPRINT_OK)
         return res;
 
     display.clearDisplay();
@@ -117,7 +117,7 @@ uint8_t enlist(const uint16_t loc, Adafruit_Fingerprint &sensor)
     display.clearDisplay();
 
     // SLOT 2
-    if (uint8_t res = process_image(2, sensor) != FINGERPRINT_OK) {
+    if (u8 res = process_image(2, sensor) != FINGERPRINT_OK) {
         return res;
     }
 
@@ -160,6 +160,6 @@ uint8_t enlist(const uint16_t loc, Adafruit_Fingerprint &sensor)
     // (`-Werror=return-type`)
     // will never run
     std::abort();
-} // uint8_t enlist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+} // u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
 
 #endif // _ENLIST_HPP

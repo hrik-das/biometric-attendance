@@ -6,23 +6,39 @@
     // FOR ADDING NEW STUDENT
     if(isset($_POST["add-student"])){
         $filterData = filteration($_POST);
+        // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
+        mysqli_query($connect, "START TRANSACTION;");
+        // set to `true` in getdata.php in case of sucessful enlist/delist/update
+        // set to `false` in getdata.php in case of any failures
+        // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
+        $_SESSION["esp-edu-success"];
+        // `E` for add/enlist
+        $_SESSION["esp-edu"]["mode"] = "E";
+        $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        
         // add student data to `users_all` table
         $query = "INSERT INTO `users_all` (`roll_no`, `full_name`, `email`, `contact`, `semester`, `enlist_date`) VALUES (?, ?, ?, ?, ?, ?)";
         $result = execCRUD($query, "isssis", $filterData["roll"], $filterData["name"], $filterData["email"], $filterData["phone"], $filterData["sem"], $filterData["date"]);
+        
         // get `fingerprint_id` of same student
-        // $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
-        // $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-        // // set `$_SESSION["add-finger-id"]` to be sent to mcu by getdata.php: case 2
-        // $_SESSION["add-finger-id"] = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
-        // // fingerprint is being set at mcu-side
-        // while($_SESSION["add-finger-id"]){
-        //     $_SESSION["sleep-192"] = sleep(1);
-        //     if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
-        //         die("Couldn't sleep(1): WAIT_IO_COMPLETION");
-        // }
-        // while(){} exits when mcu sends cofirmation: `$_POST["confirm_id"] == $_SESSION["add-finger-id"]`
-        // and then getdata/php: case 3 runs: `unset($_SESSION["add-finger-id"])`
-        echo $result;   // response finally sent to ajax call fom frontend
+        $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
+        $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
+        // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
+        $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
+        
+        // fingerprint is being set at ESP-side
+        while($_SESSION["esp-edu"])
+            sleep(1);
+        // while(){} exits when ESP sends cofirmation
+        // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
+
+        // response finally sent to ajax call fom frontend
+        if ($_SESSION["esp-edu-success"])
+            echo 1;
+        else
+            echo 0;
+
+        unset($_SESSION["esp-edu-success"]);
     }
 
     // TO SHOW ALL ENLISTED STUDENT DATA ON THE TABLE ON LOAD
@@ -72,17 +88,39 @@
     // FOR DELETING STUDENT
     if(isset($_POST["remove-student"])){
         $filterData = filteration($_POST);
+        // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
+        mysqli_query($connect, "START TRANSACTION;");
+        // set to `true` in getdata.php in case of sucessful enlist/delist/update
+        // set to `false` in getdata.php in case of any failures
+        // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
+        $_SESSION["esp-edu-success"];
+        // `D` for delete/delist
+        $_SESSION["esp-edu"]["mode"] = "D";
+        $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        
+        // delist student
         $query = "UPDATE `users_all` SET `delist_date`=CURDATE() WHERE `roll_no`=?";
         $result = execCRUD($query, "i", $filterData["roll"]);
-        // $query = "SELECT `fingerprint_id` FROM `users-all` WHERE `roll_no`=? AND `delist_date`=CURDATE()";
-        // $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-        // $_SESSION["rm-finger-id"] = mysqli_fetch_assoc($delist_id_rs)["fingerprint_id"];
-        // while($_SESSION["rm-finger-id"]){
-        //     $_SESSION["sleep-192"] = sleep(1);
-        //     if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
-        //         die("Couldn't sleep(1): WAIT_IO_COMPLETION");
-        // }
-        echo $result;    // $result = 1 (no. of affected rows = 1)
+
+        // get `fingerprint_id` of same student
+        $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no`=? AND `delist_date`=CURDATE()";
+        $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
+        // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
+        $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($delist_id_rs)["fingerprint_id"];
+        
+        // fingerprint is being deleted at ESP-side
+        while($_SESSION["esp-edu"])
+            sleep(1);
+        // while(){} exits when ESP sends cofirmation
+        // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
+
+        // response finally sent to ajax call fom frontend
+        if ($_SESSION["esp-edu-success"])
+            echo 1;
+        else
+            echo 0;
+
+        unset($_SESSION["esp-edu-success"]);
     }
 
     // FOR UPDATING STUDENT DETAILS
@@ -95,19 +133,35 @@
 
     // FOR UPDATING STUDENT FINGERPRINT
     if(!empty($_POST["update-fingerprint"])){ // `$_POST["update-fingerprint"]` should be set to `fingerprint_id` of the student
-        $_SESSION["rm-finger-id"] = $_POST["update-fingerprint"];
-        while($_SESSION["rm-finger-id"]){
-            $_SESSION["sleep-192"] = sleep(1);
-            if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
-                die("Couldn't sleep(1): WAIT_IO_COMPLETION");
-        }
-        $_SESSION["add-finger-id"] = $_POST["update-fingerprint"];
-        while($_SESSION["add-finger-id"]){
-            $_SESSION["sleep-192"] = sleep(1);
-            if($_SESSION["sleep-192"])    /* == WAIT_IO_COMPLETION (synchapi.h) */
-                die("Couldn't sleep(1): WAIT_IO_COMPLETION");
-        }
-        echo 1;
+        // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
+        mysqli_query($connect, "START TRANSACTION;");
+        // set to `true` in getdata.php in case of sucessful enlist/delist/update
+        // set to `false` in getdata.php in case of any failures
+        // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
+        $_SESSION["esp-edu-success"];
+        // `U` for update
+        $_SESSION["esp-edu"]["mode"] = "U";
+        $_SESSION["esp-edu"]["id"] = $_POST["update-fingerprint"];
+
+        // get `roll_no` of same student
+        $query = "SELECT `roll_no` FROM `users_all` WHERE `fingerprint_id`=?";
+        $update_id_rs = execCRUD($query, "i", $_POST["update-fingerprint"]);
+
+        $_SESSION["esp-edu"]["roll"] = mysqli_fetch_assoc($update_id_rs)["roll_no"];
+
+        // fingerprint is being updated at ESP-side
+        while($_SESSION["esp-edu"])
+            sleep(1);
+        // while(){} exits when ESP sends cofirmation
+        // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
+
+        // response finally sent to ajax call fom frontend
+        if ($_SESSION["esp-edu-success"])
+            echo 1;
+        else
+            echo 0;
+
+        unset($_SESSION["esp-edu-success"]);
     }
 
     if(isset($_POST["search-student"])){
@@ -208,26 +262,6 @@
         
         $query .= " ORDER BY `fingerprint_id` DESC;";
 
-        // if($filterData["regStatus"] == "all"){
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }else if($filterData["regStatus"] == "enlist"){
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }else{
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }
-        // $result = ($_SESSION["sem"] != null) ? execCRUD($query, "i", $_SESSION["sem"]) : mysqli_query($connect, $query);
         $result = mysqli_query($connect, $query);
         if(mysqli_num_rows($result) == 0){
             echo "<b>No Data Found!</b>";

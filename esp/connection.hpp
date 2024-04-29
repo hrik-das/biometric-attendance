@@ -8,8 +8,8 @@ extern Adafruit_SSD1306 display;
 extern const char *ssid;
 extern const char *passphrase;
 
-/// @brief Ensure WiFi connection. Does not return until ESP is
-/// connected to WiFi. Reconnects if connection is lost.
+/// @brief Ensure WiFi connection. Does not return until made sure
+/// that ESP is connected to WiFi. Reconnects if connection is lost.
 void verify_conn()
 {
     Serial.println(F("connection.hpp:verify_conn"));
@@ -18,7 +18,6 @@ void verify_conn()
         // [By default, ESP will attempt to reconnect to Wi-Fi network whenever it is disconnected.]
         // (https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/station-class.html#start-here)
         delay(500);
-        Serial.print(".");
     }
 } // void verify_conn()
 
@@ -34,8 +33,8 @@ void join_wifi()
 
     WiFi.begin(ssid, passphrase);
 
+    Serial.print(F("Connecting to ")); Serial.println(ssid);
     verify_conn();
-
     Serial.print(F("Connected to ")); Serial.println(ssid);
 
     display.clearDisplay();

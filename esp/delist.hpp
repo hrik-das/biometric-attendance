@@ -14,7 +14,7 @@ extern Adafruit_SSD1306 display;
 /// make available in caller scope. Should have same name as param.
 /// @return `FINGERPRINT_OK` if user was sucessfully deleted. Not `FINGERPRINT_OK`
 /// otherwise.
-uint8_t delist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+u8 delist(const u16 loc, Adafruit_Fingerprint &sensor)
 {
     Serial.println(F("delist.hpp:delist"));
     switch (sensor.deleteModel(loc)) {
@@ -39,6 +39,6 @@ uint8_t delist(const uint16_t loc, Adafruit_Fingerprint &sensor)
     // [`-Werror=return-type`]
     // will never run
     std::abort();
-} // uint8_t delist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+} // u8 delist(const u16 loc, Adafruit_Fingerprint &sensor)
 
 #endif // _DELIST_HPP

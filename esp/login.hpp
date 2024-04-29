@@ -11,7 +11,8 @@
 #include "bitmap.h"
 
 extern Adafruit_SSD1306 display;
-extern const char *send_url;
+extern String send_url;
+extern String roll;
 
 /// @brief Ask sensor to take image, convert to feature template, search for
 /// feature template to match saved templates, and return matching location. The
@@ -21,7 +22,7 @@ extern const char *send_url;
 /// make available in caller scope. Should have same name as param.
 /// @return `FINGERPRINT_OK` on fingerprint match success. Not `FINGERPRINT_OK`
 /// on failure.
-uint8_t check_for_valid_user(Adafruit_Fingerprint *sensor)
+u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
 {
     Serial.println(F("login.hpp:check_for_valid_user"));
 
@@ -78,11 +79,12 @@ uint8_t check_for_valid_user(Adafruit_Fingerprint *sensor)
     // function` warning (`-Werror=return-type`)
     // will never run
     std::abort();
-} // uint8_t check_for_valid_user(Adafruit_Fingerprint *sensor)
+} // u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
 
 /// @brief Sends matched template location to configured `send_url`. Prints Roll
-/// No. of associated user, otherwise `REMOTE ERROR`.
-/// @param sensor `[IN]` Same object that was previously passed to `uint8_t
+/// No. of associated user, otherwise `REMOTE ERROR`. Call only if `u8
+/// check_for_valid_user (Adafruit_Fingerprint *sensor)` returns `FINGERPRINT_OK`.
+/// @param sensor `[IN]` Same object that was previously passed to `u8
 /// check_for_valid_user (Adafruit_Fingerprint &sensor)`.
 /// Supply or make available in caller scope. Should have same name as param.
 void log_user(const Adafruit_Fingerprint &sensor)
@@ -94,7 +96,7 @@ void log_user(const Adafruit_Fingerprint &sensor)
     
     // [sensor library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]
-    String postData = "login=" + String(sensor.fingerID + 1);
+    String postData = "log-user-at=" + String(sensor.fingerID + 1);
     
     verify_conn();
 
@@ -106,22 +108,24 @@ void log_user(const Adafruit_Fingerprint &sensor)
     http.end();
 
     Serial.print(F("Logging user at location: ")); Serial.println(sensor.fingerID);
-    Serial.print(F("Request payload:\n")); Serial.println(postData);
+    Serial.print(F("Request payload: ")); Serial.println(postData);
     Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
+    Serial.print(F("Response payload: ")); Serial.println(payload);
 
     display.clearDisplay();
 
     if (payload.isEmpty()) {
         display.setCursor(28, 10); display.print(F("REMOTE"));
         display.setCursor(34, 38); display.print(F("ERROR"));
-        Serial.println(F("Response payload empty! [REMOTE ERROR]"));
+        Serial.println(F("Response payload empty: REMOTE ERROR"));
     } else {
-        display.setCursor(0, 0);
-        display.print(F("WELCOME")); display.setCursor(0, 20); display.setTextSize(3);
-        display.print(payload);
-        // resetting to default text size
+        roll = payload.substring(payload.indexOf('R') + 1);
+
+        display.setCursor(22, 6); display.print(F("WELCOME"));
+        display.setTextSize(3);
+        display.setCursor((128 - 18 * (roll.length() + 1)) >> 1, 38);
+        display.print(F("#")); display.print(roll);
         display.setTextSize(2);
-        Serial.print(F("Response payload [Roll No.]: ")); Serial.println(payload);
     }
 
     display.display();

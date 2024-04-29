@@ -22,7 +22,13 @@ Adafruit_Fingerprint sensor = Adafruit_Fingerprint(&ss);
 
 /// @brief Utility object for holding Template Library location
 /// of a user fingerprint to add, update or delete.
-uint16_t loc;
+u16 loc;
+/// @brief Utility object for holding the Operation that needs to be
+/// done for a user, if any.
+Operation op;
+/// @brief Utility object for holding the roll no. of a student
+///  whenever needed.
+String roll;
 
 /// @brief Global OLED display object for modules to use.
 Adafruit_SSD1306 display(128, 64);
@@ -33,7 +39,8 @@ const char *ssid = "";
 const char *passphrase = "";
 
 /// @brief Fully qualified resource path of remote server
-const char *send_url = "http://playbahn-arch/bas/getdata.php";
+String send_url = 
+"http://playbahn-arch/bas/getdata.php";
 
 void setup() {
     Serial.println(F("esp.ino:setup"));
@@ -92,65 +99,26 @@ void loop() {
         log_user(sensor);
 
     delay(50);
-    
-    // ==============================================================
-    // USER ENLIST
-    // ==============================================================
-    // check with the remote server if a user needs to be enlisted
-    // (or from the microcontroller's POV, their fingerprint needs
-    // to be added to the template library)
-    // `loc` will hold Location of template library where user
-    //  fingerprint is to be stored
-    if (check_action(Action::Enlist, &loc)) {
-        // fingerprint needs to added, try to create and store user
-        // fingerprint at location `loc` in template library
-        if (enlist(loc, sensor) == FINGERPRINT_OK) {
-            // user enlisted successfully, send success message
-            confirm_action(Action::Enlist, loc, true);
-        } else {
-            // user NOT enlisted successfully, send failure message
-            confirm_action(Action::Enlist, loc, false);
-        }
-    }
 
     // ==============================================================
-    // USER DELIST
+    // SPECIAL OPERATIONS - ENLIST / DELIST / UPDATE
     // ==============================================================
-    // check with the remote server if a user needs to be delisted
-    // (or from the microcontroller's POV, their fingerprint needs
-    //  to be deleted from template library)
-    // `loc` will hold Location of template library from where user
-    //  fingerprint is to be deleted
-    if (check_action(Action::Delist, &loc)) {
-        // fingerprint needs to deleted, try to delete user
-        // fingerprint from location `loc` in template library
-        if (delist(loc, sensor) == FINGERPRINT_OK) {
-            // user delisted successfully, send success message
-            confirm_action(Action::Delist, loc, true);
+    // check with the remote server if a user needs to be either
+    // enlisted, delisted, or updated (or from the microcontroller's
+    // POV, their fingerprint needs to be added to, deleted, or
+    // updated from the template library)
+    if (check_EDU(&op, &loc, &roll)) {
+        // An add, delete or update operation needs to be done
+        u8 res = [] (Operation op) { switch (op) {
+            case Operation::Enlist: return enlist(loc, sensor);
+            case Operation::Delist: return delist(loc, sensor);
+            case Operation::Update: return update(loc, sensor);
+            }} (op);
+        
+        if (res == FINGERPRINT_OK) {
+            confirm_EDU(op, loc, roll, true);
         } else {
-            // user NOT delisted successfully, send failure message
-            confirm_action(Action::Delist, loc, false);
-        }
-    }
-
-    // ==============================================================
-    // USER UPDATE
-    // ==============================================================
-    // check with the remote server if a user needs to be updated
-    // (or from the microcontroller's POV, their old fingerprint
-    // needs to be deleted from template library and a new one is to
-    // be created and stored)
-    // `loc` will hold Location of template library at where user
-    //  fingerprint is to be updated
-    if (check_action(Action::Update, &loc)) {
-        // fingerprint needs to update, try to update user
-        // fingerprint at location `loc` in template library
-        if (update(loc, sensor) == FINGERPRINT_OK) {
-            // user update successfully, send success message
-            confirm_action(Action::Update, loc, true);
-        } else {
-            // user NOT updated successfully, send failure message
-            confirm_action(Action::Update, loc, false);
+            confirm_EDU(op, loc, roll, false);
         }
     }
 }
