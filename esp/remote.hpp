@@ -58,6 +58,7 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
         case 'E': return Operation::Enlist;
         case 'D': return Operation::Delist;
         case 'U': return Operation::Update;
+        default: std::abort();
         }} ();
 
     u8 idx_roll = payload.indexOf('R');
@@ -71,6 +72,7 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
         case Operation::Enlist: return "Enlist";
         case Operation::Delist: return "Delist";
         case Operation::Update: return "Update";
+        default: std::abort();
     }} ());
     Serial.print(F(" fingerprint of Roll No. ")); Serial.print(*roll);
     Serial.print(F(" at Location: ")); Serial.println(*loc);
@@ -87,8 +89,9 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
 /// @param op `[IN]` `Operation` whose confirmation status is to be sent
 /// @param loc `[IN]` Location at which user's fingerprint was to be manipulated.
 /// @param roll `[IN]` Roll No. of the user whose fingerprint was to be manipulated.
-/// @param success `[IN]` Set to `true` for successful manipulation, `false` otherwise.
-void confirm_EDU(const Operation op, const u16 loc, const String roll, const bool success)
+/// @param result `[IN]` Set to `FINGERPRINT_OK` for successful manipulation, NOT
+/// `FINGERPRINT_OK` otherwise.
+void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 result)
 {
     Serial.print(F("remote.hpp:confirm_EDU:"));
 
@@ -96,6 +99,7 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const boo
         case Operation::Enlist: return "ENLIST";
         case Operation::Delist: return "DELIST";
         case Operation::Update: return "UPDATE";
+        default: std::abort();
         }} ();
 
     Serial.println(operation);
@@ -109,12 +113,12 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const boo
     display.setCursor(22, 20);
     Serial.print(F("Sending ")); Serial.print(operation); Serial.print(F(" "));
 
-    if (success) {
-        postData += "ok";
-        display.print(F("SUCCESS")); Serial.print(F("SUCCESS"));
-    } else {
+    if (result) { /* != FINGERPRINT_OK */
         postData += "err";
         display.print(F("FAILURE")); Serial.print(F("FAILURE"));
+    } else {
+        postData += "ok";
+        display.print(F("SUCCESS")); Serial.print(F("SUCCESS"));
     }
     
     display.setTextSize(3);
@@ -138,6 +142,6 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const boo
     Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
     Serial.print(F("Response payload: ")); Serial.println(payload);
     delay(2000);
-} // void confirm_EDU(const Operation op, const u16 loc, const String roll, const bool success)
+} // void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 result)
 
 #endif // _REMOTE_HPP

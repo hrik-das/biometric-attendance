@@ -48,7 +48,7 @@ void setup() {
 
     // Address 0x3D for 128x64
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-        Serial.println(F("SSD1306 allocation failed"));
+        Serial.println(F("SSD1306 Allocation failed."));
         while (1) delay(1);
     }
 
@@ -109,16 +109,13 @@ void loop() {
     // updated from the template library)
     if (check_EDU(&op, &loc, &roll)) {
         // An add, delete or update operation needs to be done
-        u8 res = [] (Operation op) { switch (op) {
+        u8 result = [] (Operation op) { switch (op) {
             case Operation::Enlist: return enlist(loc, sensor);
             case Operation::Delist: return delist(loc, sensor);
             case Operation::Update: return update(loc, sensor);
+            default: std::abort();
             }} (op);
         
-        if (res == FINGERPRINT_OK) {
-            confirm_EDU(op, loc, roll, true);
-        } else {
-            confirm_EDU(op, loc, roll, false);
-        }
+        confirm_EDU(op, loc, roll, result);
     }
 }

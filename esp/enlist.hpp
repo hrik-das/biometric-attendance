@@ -100,8 +100,8 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
 {
     Serial.println(F("enlist.hpp:enlist"));
     // SLOT 1
-    if (u8 res = process_image(1, sensor) != FINGERPRINT_OK)
-        return res;
+    if (u8 result = process_image(1, sensor) != FINGERPRINT_OK)
+        return result;
 
     display.clearDisplay();
     display.setCursor(28, 10); display.print(F("REMOVE"));
@@ -117,8 +117,8 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
     display.clearDisplay();
 
     // SLOT 2
-    if (u8 res = process_image(2, sensor) != FINGERPRINT_OK) {
-        return res;
+    if (u8 result = process_image(2, sensor) != FINGERPRINT_OK) {
+        return result;
     }
 
     Serial.println("Creating model.");

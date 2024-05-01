@@ -15,16 +15,16 @@ extern Adafruit_SSD1306 display;
 /// make available in caller scope. Should have same name as param.
 /// @return `FINGERPRINT_OK` if user's fingerprint was sucessfully updated. Not
 /// `FINGERPRINT_OK` otherwise. 
-uint8_t update(const u16 loc, Adafruit_Fingerprint &sensor)
+u8 update(const u16 loc, Adafruit_Fingerprint &sensor)
 {
     Serial.println(F("update.hpp:update"));
-    if (uint8_t res = delist(loc, sensor) != FINGERPRINT_OK)
-        return res;
+    if (u8 result = delist(loc, sensor) != FINGERPRINT_OK)
+        return result;
     
-    if (uint8_t res = enlist(loc, sensor) != FINGERPRINT_OK)
-        return res;
+    if (u8 result = enlist(loc, sensor) != FINGERPRINT_OK)
+        return result;
 
     return FINGERPRINT_OK;
-} // uint8_t update(const u16 &loc, Adafruit_Fingerprint &sensor)
+} // u8 update(const u16 &loc, Adafruit_Fingerprint &sensor)
 
 #endif // _UPDATE_HPP
