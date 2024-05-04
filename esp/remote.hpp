@@ -35,7 +35,7 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
 
     verify_conn();
 
-    String payload = bas::httpPOST(postData);
+    String payload = httpPOST(postData);
 
     if (payload.isEmpty())
         // Server did not return anything, nothing to do.
@@ -116,7 +116,7 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 
 
     verify_conn();
     
-    (void) bas::httpPOST(postData);
+    (void) httpPOST(postData);
 
     delay(2000);
 } // void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 result)

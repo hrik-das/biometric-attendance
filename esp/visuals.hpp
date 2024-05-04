@@ -5,10 +5,6 @@
 
 extern Adafruit_SSD1306 display;
 
-/// @brief Project specific utils.
-namespace bas
-{
-
 /// @brief Displays `LOCAL ERROR` message on the OLED for `2` seconds.
 void showLocalErrorMsg()
 {
@@ -30,7 +26,5 @@ void draw64x64Bitmap(const u8 bitmap[])
     display.display();
     delay(1000);
 } // void draw64x64Bitmap(const u8 bitmap[])
-
-} // namespace bas
 
 #endif // _VISUALS_HPP

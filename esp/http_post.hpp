@@ -6,10 +6,6 @@
 
 extern const String send_url;
 
-/// @brief Project specific utils.
-namespace bas
-{
-
 /// @brief In-house utility (boilerplate reduction) for sending a POST
 /// request with the supplied data to the configured remote server. Prints
 /// supplied data, return HTTP code, and response payload to Serial Monitor.
@@ -35,7 +31,5 @@ String httpPOST(const String postData)
 
     return payload;
 } // String httpPOST(const String postData)
-
-} // namespace bas
 
 #endif // _HTTP_POST_HPP

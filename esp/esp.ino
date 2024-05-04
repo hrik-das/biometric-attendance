@@ -73,13 +73,13 @@ void setup() {
     if (!sensor.verifyPassword()) {
         // Sensor is not active or repsonding
         Serial.println(F("Did not find fingerprint sensor"));
-        bas::showLocalErrorMsg();
+        showLocalErrorMsg();
         while (1) delay(1);
     }
 
     // Sensor is active and responding
     Serial.println(F("Found fingerprint sensor!"));
-    bas::draw64x64Bitmap(FOUND);
+    draw64x64Bitmap(FOUND);
 
     sensor.getTemplateCount();
     Serial.print(F("Templates in sensor: "));

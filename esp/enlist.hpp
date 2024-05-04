@@ -27,7 +27,7 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &sensor)
 
     timer.attach_ms(1000, [&timeout] { --timeout; });
 
-    bas::draw64x64Bitmap(SCANNING);
+    draw64x64Bitmap(SCANNING);
 
     while (image != FINGERPRINT_OK) {
         if (!timeout) {
@@ -45,18 +45,18 @@ User took too long to enroll"));
                 Serial.print(F("Image taken. Slot: ")); Serial.println(slot);
                 // give the user an affirmative message that their
                 // fingerprint was scanned successfully
-                bas::draw64x64Bitmap(FOUND);
+                draw64x64Bitmap(FOUND);
                 break;
             case FINGERPRINT_NOFINGER:
-                bas::draw64x64Bitmap(SCANNING);
+                draw64x64Bitmap(SCANNING);
                 break;
             case FINGERPRINT_PACKETRECIEVEERR:
                 Serial.println(F("enlist.hpp:42:FINGERPRINT_PACKETRECIEVEERR"));
-                bas::showLocalErrorMsg();
+                showLocalErrorMsg();
                 break;
             case FINGERPRINT_IMAGEFAIL:
                 Serial.println(F("enlist.hpp:42:FINGERPRINT_IMAGEFAIL"));
-                bas::showLocalErrorMsg();
+                showLocalErrorMsg();
                 break;
         }
     } // while (image != FINGERPRINT_OK)
@@ -67,19 +67,19 @@ User took too long to enroll"));
         case FINGERPRINT_OK:
             return FINGERPRINT_OK;
         case FINGERPRINT_IMAGEMESS:
-            bas::draw64x64Bitmap(NOT_FOUND);
+            draw64x64Bitmap(NOT_FOUND);
             return FINGERPRINT_IMAGEMESS;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("enlist.hpp:66:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_FEATUREFAIL:
             Serial.println(F("enlist.hpp:66:FINGERPRINT_FEATUREFAIL"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_FEATUREFAIL;
         case FINGERPRINT_INVALIDIMAGE:
             Serial.println(F("enlist.hpp:66:FINGERPRINT_INVALIDIMAGE"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_INVALIDIMAGE;
     }
 
@@ -128,11 +128,11 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
             break;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("enlist.hpp:125:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_ENROLLMISMATCH:
             Serial.println(F("enlist.hpp:125:FINGERPRINT_ENROLLMISMATCH"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_ENROLLMISMATCH;
     }
     
@@ -140,19 +140,19 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)
     switch (sensor.storeModel(loc)) {
         case FINGERPRINT_OK:
             Serial.print("Stored model at Location: "); Serial.println(loc);
-            bas::draw64x64Bitmap(FOUND);
+            draw64x64Bitmap(FOUND);
             return FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
             Serial.println(F("enlist.hpp:140:FINGERPRINT_BADLOCATION"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_BADLOCATION;
         case FINGERPRINT_FLASHERR:
             Serial.println(F("enlist.hpp:140:FINGERPRINT_FLASHERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_FLASHERR;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("enlist.hpp:140:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
     }
 

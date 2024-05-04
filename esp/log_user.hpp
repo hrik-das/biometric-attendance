@@ -28,15 +28,15 @@ u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
         case FINGERPRINT_OK:
             break;
         case FINGERPRINT_NOFINGER:
-            bas::draw64x64Bitmap(SYS_IDLE);
+            draw64x64Bitmap(SYS_IDLE);
             return FINGERPRINT_NOFINGER;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("login.hpp:27:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_IMAGEFAIL:
             Serial.println(F("login.hpp:27:FINGERPRINT_IMAGEFAIL"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_IMAGEFAIL;
     }
 
@@ -44,32 +44,32 @@ u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
         case FINGERPRINT_OK:
             break;
         case FINGERPRINT_IMAGEMESS:
-            bas::draw64x64Bitmap(NOT_FOUND);
+            draw64x64Bitmap(NOT_FOUND);
             return FINGERPRINT_IMAGEMESS;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("login.hpp:43:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_FEATUREFAIL:
             Serial.println(F("login.hpp:43:FINGERPRINT_FEATUREFAIL"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_FEATUREFAIL;
         case FINGERPRINT_INVALIDIMAGE:
             Serial.println(F("login.hpp:43:FINGERPRINT_INVALIDIMAGE"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_INVALIDIMAGE;
     }
     
     switch (sensor->fingerFastSearch()) {
         case FINGERPRINT_OK:
-            bas::draw64x64Bitmap(FOUND);
+            draw64x64Bitmap(FOUND);
             return FINGERPRINT_OK;
         case FINGERPRINT_NOTFOUND:
-            bas::draw64x64Bitmap(NOT_FOUND);
+            draw64x64Bitmap(NOT_FOUND);
             return FINGERPRINT_NOTFOUND;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("login.hpp:63:FINGERPRINT_PACKETRECIEVEERR"));
-            bas::showLocalErrorMsg();
+            showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
     }
 
@@ -95,7 +95,7 @@ void log_user(const Adafruit_Fingerprint &sensor)
     
     verify_conn();
 
-    String payload = bas::httpPOST(postData);
+    String payload = httpPOST(postData);
 
     Serial.print(F("Logging user at location: ")); Serial.println(sensor.fingerID);
 
