@@ -7,8 +7,6 @@
 extern const String send_url;
 
 /// @brief Project specific utils.
-namespace bas {}
-
 namespace bas
 {
 

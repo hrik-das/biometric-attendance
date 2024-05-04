@@ -5,6 +5,7 @@
 
 extern Adafruit_SSD1306 display;
 
+/// @brief Project specific utils.
 namespace bas
 {
 
