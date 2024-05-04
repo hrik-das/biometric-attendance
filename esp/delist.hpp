@@ -4,7 +4,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
 
-#include "boilerplate.hpp"
+#include "visuals.hpp"
 
 extern Adafruit_SSD1306 display;
 
@@ -23,15 +23,15 @@ u8 delist(const u16 loc, Adafruit_Fingerprint &sensor)
             return FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("delist.hpp:20:FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            bas::showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_BADLOCATION:
             Serial.println(F("delist.hpp:20:FINGERPRINT_BADLOCATION"));
-            showLocalErrorMsg();
+            bas::showLocalErrorMsg();
             return FINGERPRINT_BADLOCATION;
         case FINGERPRINT_FLASHERR:
             Serial.println(F("delist.hpp:20:FINGERPRINT_FLASHERR"));
-            showLocalErrorMsg();
+            bas::showLocalErrorMsg();
             return FINGERPRINT_FLASHERR;
     }
 

@@ -4,12 +4,12 @@
 #include <pins_arduino.h>
 
 #include "connection.hpp"
-#include "login.hpp"
+#include "log_user.hpp"
 #include "enlist.hpp"
 #include "delist.hpp"
 #include "update.hpp"
 #include "remote.hpp"
-#include "boilerplate.hpp"
+#include "visuals.hpp"
 #include "bitmap.h"
 
 #define FINGERPRINT_RX D3
@@ -34,13 +34,15 @@ String roll;
 Adafruit_SSD1306 display(128, 64);
 
 /// @brief WiFi network name
-const char *ssid = "";
+const char *ssid = 
+"";
 /// @brief WiFi network password
-const char *passphrase = "";
+const char *passphrase = 
+"";
 
 /// @brief Fully qualified resource path of remote server
-String send_url = 
-"http://playbahn-arch/bas/getdata.php";
+const String send_url = 
+"";
 
 void setup() {
     Serial.println(F("esp.ino:setup"));
@@ -71,13 +73,13 @@ void setup() {
     if (!sensor.verifyPassword()) {
         // Sensor is not active or repsonding
         Serial.println(F("Did not find fingerprint sensor"));
-        showLocalErrorMsg();
+        bas::showLocalErrorMsg();
         while (1) delay(1);
     }
 
     // Sensor is active and responding
     Serial.println(F("Found fingerprint sensor!"));
-    draw64x64Bitmap(FOUND);
+    bas::draw64x64Bitmap(FOUND);
 
     sensor.getTemplateCount();
     Serial.print(F("Templates in sensor: "));
