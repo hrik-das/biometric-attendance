@@ -142,22 +142,17 @@
     if(isset($_POST["dropdown-sem"])){
         $filterData = filteration($_POST);
         $_SESSION["dropdown-sem"] = $filterData["dropdown-sem"];
-
         $query = "SELECT * FROM `users_all` WHERE `semester`";
-
-        $query .= match ($filterData["dropdown-sem"]) {
-            "all" => " LIKE \"_\"", // match any/all semesters
-            default => " = " . $filterData["dropdown-sem"],
+        $query .= match($filterData["dropdown-sem"]){
+            "all" => " LIKE \"_\"",    // match any/all semesters
+            default => " = ".$filterData["dropdown-sem"],
         };
-
-        $query .= match ($_SESSION["dropdown-reg-status"]) {
+        $query .= match($_SESSION["dropdown-reg-status"]){
             "enlist" => " AND `delist_date` IS NULL",
             "delist" => " AND `delist_date` IS NOT NULL",
             "all" => "",
         };
-
         $query .= " ORDER BY `fingerprint_id`;";
-        
         $result = mysqli_query($connect, $query);
         $i = 1;
         $data = "";
@@ -192,42 +187,17 @@
         $data = "";
         $date = "";
         $_SESSION["dropdown-reg-status"] = $filterData["dropdown-reg-status"];
-        
         $query = "SELECT * FROM `users_all` WHERE `semester`";
-        
-        $query .= match ($_SESSION["dropdown-sem"]) {
-            "all" => " LIKE \"_\"", // match any/all semesters
+        $query .= match($_SESSION["dropdown-sem"]){
+            "all" => " LIKE \"_\"",    // match any/all semesters
             default => " = " . $_SESSION["dropdown-sem"],
         };
-        
-        $query .= match ($filterData["dropdown-reg-status"]) {
+        $query .= match($filterData["dropdown-reg-status"]){
             "enlist" => " AND `delist_date` IS NULL",
             "delist" => " AND `delist_date` IS NOT NULL",
             "all" => "",
         };
-        
-        $query .= " ORDER BY `fingerprint_id` DESC;";
-
-        // if($filterData["regStatus"] == "all"){
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }else if($filterData["regStatus"] == "enlist"){
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }else{
-        //     if($_SESSION["sem"] != null){
-        //         $query = "SELECT * FROM `users_all` WHERE `semester`=? AND `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-        //     }else{
-        //         $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NOT NULL ORDER BY `fingerprint_id` DESC";
-        //     }
-        // }
-        // $result = ($_SESSION["sem"] != null) ? execCRUD($query, "i", $_SESSION["sem"]) : mysqli_query($connect, $query);
+        $query .= " ORDER BY `fingerprint_id` DESC";
         $result = mysqli_query($connect, $query);
         if(mysqli_num_rows($result) == 0){
             echo "<b>No Data Found!</b>";
