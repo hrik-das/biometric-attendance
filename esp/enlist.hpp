@@ -5,7 +5,7 @@
 #include <Adafruit_Fingerprint.h>
 #include <Ticker.h>
 
-#include "boilerplate.hpp"
+#include "visuals.hpp"
 #include "bitmap.h"
 
 extern Adafruit_SSD1306 display;

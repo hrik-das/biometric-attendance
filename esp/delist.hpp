@@ -4,7 +4,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
 
-#include "boilerplate.hpp"
+#include "visuals.hpp"
 
 extern Adafruit_SSD1306 display;
 

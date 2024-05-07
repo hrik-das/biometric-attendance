@@ -1,17 +1,15 @@
-#ifndef _LOGIN_HPP
-#define _LOGIN_HPP 1
+#ifndef _LOG_USER_HPP
+#define _LOG_USER_HPP 1
 
-#include <WiFiClient.h>
-#include <ESP8266HTTPClient.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
 
 #include "connection.hpp"
-#include "boilerplate.hpp"
+#include "http_post.hpp"
+#include "visuals.hpp"
 #include "bitmap.h"
 
 extern Adafruit_SSD1306 display;
-extern String send_url;
 extern String roll;
 
 /// @brief Ask sensor to take image, convert to feature template, search for
@@ -33,11 +31,11 @@ u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
             draw64x64Bitmap(SYS_IDLE);
             return FINGERPRINT_NOFINGER;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:28:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("login.hpp:27:FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_IMAGEFAIL:
-            Serial.println(F("login.hpp:28:FINGERPRINT_IMAGEFAIL"));
+            Serial.println(F("login.hpp:27:FINGERPRINT_IMAGEFAIL"));
             showLocalErrorMsg();
             return FINGERPRINT_IMAGEFAIL;
     }
@@ -49,15 +47,15 @@ u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
             draw64x64Bitmap(NOT_FOUND);
             return FINGERPRINT_IMAGEMESS;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:44:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("login.hpp:43:FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
         case FINGERPRINT_FEATUREFAIL:
-            Serial.println(F("login.hpp:44:FINGERPRINT_FEATUREFAIL"));
+            Serial.println(F("login.hpp:43:FINGERPRINT_FEATUREFAIL"));
             showLocalErrorMsg();
             return FINGERPRINT_FEATUREFAIL;
         case FINGERPRINT_INVALIDIMAGE:
-            Serial.println(F("login.hpp:44:FINGERPRINT_INVALIDIMAGE"));
+            Serial.println(F("login.hpp:43:FINGERPRINT_INVALIDIMAGE"));
             showLocalErrorMsg();
             return FINGERPRINT_INVALIDIMAGE;
     }
@@ -70,7 +68,7 @@ u8 check_for_valid_user(Adafruit_Fingerprint *sensor)
             draw64x64Bitmap(NOT_FOUND);
             return FINGERPRINT_NOTFOUND;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:64:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("login.hpp:63:FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return FINGERPRINT_PACKETRECIEVEERR;
     }
@@ -91,31 +89,20 @@ void log_user(const Adafruit_Fingerprint &sensor)
 {
     Serial.println(F("login.hpp:log_user"));
     
-    WiFiClient client;
-    HTTPClient http;
-    
     // [sensor library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]
     String postData = "log-user-at=" + String(sensor.fingerID + 1);
     
     verify_conn();
 
-    http.begin(client, send_url);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    int httpCode = http.POST(postData);
-    String payload = http.getString();
-    http.end();
+    String payload = httpPOST(postData);
 
     Serial.print(F("Logging user at location: ")); Serial.println(sensor.fingerID);
-    Serial.print(F("Request payload: ")); Serial.println(postData);
-    Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
-    Serial.print(F("Response payload: ")); Serial.println(payload);
 
     display.clearDisplay();
 
     if (payload.isEmpty()) {
-        display.setCursor(28, 10); display.print(F("REMOTE"));
+        display.setCursor(27, 10); display.print(F("REMOTE"));
         display.setCursor(34, 38); display.print(F("ERROR"));
         Serial.println(F("Response payload empty: REMOTE ERROR"));
     } else {
@@ -132,4 +119,4 @@ void log_user(const Adafruit_Fingerprint &sensor)
     delay(1000);
 } // void log_user(const Adafruit_Fingerprint &sensor)
 
-#endif // _LOGIN_HPP
+#endif // _LOG_USER_HPP

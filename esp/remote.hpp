@@ -1,14 +1,12 @@
 #ifndef _REMOTE_HPP
 #define _REMOTE_HPP 1
 
-#include <WiFiClient.h> 
-#include <ESP8266HTTPClient.h>
 #include <Adafruit_SSD1306.h>
 
+#include "http_post.hpp"
 #include "connection.hpp"
 
 extern Adafruit_SSD1306 display;
-extern String send_url;
 
 /// @brief Denotes any of the special operations enlist, delist, or update
 /// that needs to be done for a user.
@@ -33,22 +31,11 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
 {
     Serial.print(F("remote.hpp:check_EDU"));
 
-    WiFiClient client;
-    HTTPClient http;
     String postData = "check-edu=";
 
     verify_conn();
 
-    http.begin(client, send_url);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    int httpCode = http.POST(postData);
-    String payload = http.getString();
-    http.end();
-
-    Serial.print(F("Request payload: ")); Serial.println(postData);
-    Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
-    Serial.print(F("Response payload: ")); Serial.println(payload);
+    String payload = httpPOST(postData);
 
     if (payload.isEmpty())
         // Server did not return anything, nothing to do.
@@ -104,8 +91,6 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 
 
     Serial.println(operation);
 
-    WiFiClient client;
-    HTTPClient http;
     String postData = "confirm-edu=";
 
     display.clearDisplay();
@@ -131,16 +116,8 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 
 
     verify_conn();
     
-    http.begin(client, send_url);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    (void) httpPOST(postData);
 
-    int httpCode = http.POST(postData);
-    String payload = http.getString();
-    http.end();
-
-    Serial.print(F("Request payload: ")); Serial.println(postData);
-    Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
-    Serial.print(F("Response payload: ")); Serial.println(payload);
     delay(2000);
 } // void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 result)
 
