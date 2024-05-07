@@ -197,7 +197,7 @@
             "delist" => " AND `delist_date` IS NOT NULL",
             "all" => "",
         };
-        $query .= " ORDER BY `fingerprint_id` DESC";
+        $query .= " ORDER BY `fingerprint_id` DESC;";
         $result = mysqli_query($connect, $query);
         if(mysqli_num_rows($result) == 0){
             echo "<b>No Data Found!</b>";
