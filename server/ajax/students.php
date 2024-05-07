@@ -6,39 +6,45 @@
     // FOR ADDING NEW STUDENT
     if(isset($_POST["add-student"])){
         $filterData = filteration($_POST);
-        // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
-        mysqli_query($connect, "START TRANSACTION;");
-        // set to `true` in getdata.php in case of sucessful enlist/delist/update
-        // set to `false` in getdata.php in case of any failures
-        // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
-        $_SESSION["esp-edu-success"];
-        // `E` for add/enlist
-        $_SESSION["esp-edu"]["mode"] = "E";
-        $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        // // BLOCKING BEHAVIOUR ===================================================
+        // // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
+        // mysqli_query($connect, "START TRANSACTION;");
+        // // set to `true` in getdata.php in case of sucessful enlist/delist/update
+        // // set to `false` in getdata.php in case of any failures
+        // // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
+        // $_SESSION["esp-edu-success"];
+        // // `E` for add/enlist
+        // $_SESSION["esp-edu"]["mode"] = "E";
+        // $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        // // BLOCKING BEHAVIOUR ===================================================
         
         // add student data to `users_all` table
         $query = "INSERT INTO `users_all` (`roll_no`, `full_name`, `email`, `contact`, `semester`, `enlist_date`) VALUES (?, ?, ?, ?, ?, ?)";
         $result = execCRUD($query, "isssis", $filterData["roll"], $filterData["name"], $filterData["email"], $filterData["phone"], $filterData["sem"], $filterData["date"]);
         
-        // get `fingerprint_id` of same student
-        $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
-        $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-        // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
-        $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
+        // // BLOCKING BEHAVIOUR ===================================================
+        // // get `fingerprint_id` of same student
+        // $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
+        // $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
+        // // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
+        // $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
         
-        // fingerprint is being set at ESP-side
-        while($_SESSION["esp-edu"])
-            sleep(1);
-        // while(){} exits when ESP sends cofirmation
-        // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
+        // // fingerprint is being set at ESP-side
+        // while($_SESSION["esp-edu"])
+        //     sleep(1);
+        // // while(){} exits when ESP sends cofirmation
+        // // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
 
-        // response finally sent to ajax call fom frontend
-        if ($_SESSION["esp-edu-success"])
+        // // response finally sent to ajax call fom frontend
+        // if ($_SESSION["esp-edu-success"])
+        // // BLOCKING BEHAVIOUR ===================================================
             echo 1;
-        else
-            echo 0;
+        // // BLOCKING BEHAVIOUR ===================================================
+        // else
+        //     echo 0;
 
-        unset($_SESSION["esp-edu-success"]);
+        // unset($_SESSION["esp-edu-success"]);
+        // // BLOCKING BEHAVIOUR ===================================================
     }
 
     // TO SHOW ALL ENLISTED STUDENT DATA ON THE TABLE ON LOAD
@@ -88,39 +94,45 @@
     // FOR DELETING STUDENT
     if(isset($_POST["remove-student"])){
         $filterData = filteration($_POST);
-        // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
-        mysqli_query($connect, "START TRANSACTION;");
-        // set to `true` in getdata.php in case of sucessful enlist/delist/update
-        // set to `false` in getdata.php in case of any failures
-        // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
-        $_SESSION["esp-edu-success"];
-        // `D` for delete/delist
-        $_SESSION["esp-edu"]["mode"] = "D";
-        $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        // // BLOCKING BEHAVIOUR ===================================================
+        // // START TRANSACTION (MIGHT COMMIT OR ROLLBACK)
+        // mysqli_query($connect, "START TRANSACTION;");
+        // // set to `true` in getdata.php in case of sucessful enlist/delist/update
+        // // set to `false` in getdata.php in case of any failures
+        // // NOT to be set as a sub index of `$_SESSION["esp-edu"]`
+        // $_SESSION["esp-edu-success"];
+        // // `D` for delete/delist
+        // $_SESSION["esp-edu"]["mode"] = "D";
+        // $_SESSION["esp-edu"]["roll"] = $filterData["roll"];
+        // // BLOCKING BEHAVIOUR ===================================================
         
         // delist student
         $query = "UPDATE `users_all` SET `delist_date`=CURDATE() WHERE `roll_no`=?";
         $result = execCRUD($query, "i", $filterData["roll"]);
 
-        // get `fingerprint_id` of same student
-        $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no`=? AND `delist_date`=CURDATE()";
-        $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-        // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
-        $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($delist_id_rs)["fingerprint_id"];
+        // // BLOCKING BEHAVIOUR ===================================================
+        // // get `fingerprint_id` of same student
+        // $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no`=? AND `delist_date`=CURDATE()";
+        // $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
+        // // set `$_SESSION["esp-edu"]["id"]` and `$_SESSION["esp-edu"]["roll"]` to be sent to ESP by getdata.php
+        // $_SESSION["esp-edu"]["id"] = mysqli_fetch_assoc($delist_id_rs)["fingerprint_id"];
         
-        // fingerprint is being deleted at ESP-side
-        while($_SESSION["esp-edu"])
-            sleep(1);
-        // while(){} exits when ESP sends cofirmation
-        // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
+        // // fingerprint is being deleted at ESP-side
+        // while($_SESSION["esp-edu"])
+        //     sleep(1);
+        // // while(){} exits when ESP sends cofirmation
+        // // and then getdata/php: case 3 runs: `unset($_SESSION["esp-edu"])`
 
-        // response finally sent to ajax call fom frontend
-        if ($_SESSION["esp-edu-success"])
+        // // response finally sent to ajax call fom frontend
+        // if ($_SESSION["esp-edu-success"])
+        // // BLOCKING BEHAVIOUR ===================================================
             echo 1;
-        else
-            echo 0;
+        // // BLOCKING BEHAVIOUR ===================================================
+        // else
+        //     echo 0;
 
-        unset($_SESSION["esp-edu-success"]);
+        // unset($_SESSION["esp-edu-success"]);
+        // // BLOCKING BEHAVIOUR ===================================================
     }
 
     // FOR UPDATING STUDENT DETAILS
@@ -194,6 +206,7 @@
     }
 
     if(isset($_POST["dropdown-sem"])){
+        $delist_date = "";
         $filterData = filteration($_POST);
         $_SESSION["dropdown-sem"] = $filterData["dropdown-sem"];
 
@@ -220,6 +233,7 @@
             exit();
         }
         while($row = mysqli_fetch_assoc($result)){
+            $delist_date = $row["delist_date"] ?: "NIL";
             $data .= "
                 <tr class='align-middle'>
                     <td>$i</td>
@@ -229,7 +243,7 @@
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
-                    <td>NIL</td>
+                    <td>{$delist_date}</td>
                     <td>
                         <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
                         <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
@@ -244,7 +258,7 @@
         $filterData = filteration($_POST);
         $i = 1;
         $data = "";
-        $date = "";
+        $delist_date = "";
         $_SESSION["dropdown-reg-status"] = $filterData["dropdown-reg-status"];
         
         $query = "SELECT * FROM `users_all` WHERE `semester`";
@@ -268,11 +282,7 @@
             exit();
         }
         while($row = mysqli_fetch_assoc($result)){
-            if($row["delist_date"] != null){
-                $date = $row["delist_date"];
-            }else{
-                $date = "NIL";
-            }
+            $delist_date = $row["delist_date"] ?: "NIL";
             $data .= "
                 <tr class='align-middle'>
                     <td>$i</td>
@@ -282,7 +292,7 @@
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
-                    <td>$date</td>
+                    <td>{$delist_date}</td>
                     <td>
                         <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
                         <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
