@@ -45,8 +45,8 @@ const String send_url =
 "";
 
 void setup() {
-    Serial.println(F("esp.ino:setup"));
     Serial.begin(115200);
+    Serial.println(F("esp.ino:setup"));
 
     // Address 0x3D for 128x64
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
