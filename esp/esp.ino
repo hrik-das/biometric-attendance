@@ -35,14 +35,14 @@ Adafruit_SSD1306 SSD1306(128, 64);
 
 /// @brief WiFi network name
 const char *ssid = 
-"bigdaddyroy";
+"";
 /// @brief WiFi network password
 const char *passphrase = 
-"54e74ffded91q";
+"";
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://playbahn/bas/getdata.php";
+"";
 
 void setup() {
     Serial.begin(115200);
