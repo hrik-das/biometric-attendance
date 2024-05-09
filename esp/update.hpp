@@ -1,30 +1,23 @@
 #ifndef _UPDATE_HPP
 #define _UPDATE_HPP 1
 
-#include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
 
 #include "enlist.hpp"
 #include "delist.hpp"
 
-extern Adafruit_SSD1306 display;
-
 /// @brief Update the user at library location `loc`.
 /// @param loc `[IN]` Location where the user's fingerprint is to be updated.
-/// @param sensor `[IN]` Object denoting a fingerprint sensor. Supply or
-/// make available in caller scope. Should have same name as param.
+/// @param R307 `[IN]` Object denoting the R307 fingerprint sensor.
 /// @return `FINGERPRINT_OK` if user's fingerprint was sucessfully updated. Not
 /// `FINGERPRINT_OK` otherwise. 
-u8 update(const u16 loc, Adafruit_Fingerprint &sensor)
+u8 update(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.println(F("update.hpp:update"));
-    if (u8 result = delist(loc, sensor) != FINGERPRINT_OK)
-        return result;
-    
-    if (u8 result = enlist(loc, sensor) != FINGERPRINT_OK)
+    if (u8 result = delist(loc, R307) /* != FINGERPRINT_OK */ )
         return result;
 
-    return FINGERPRINT_OK;
-} // u8 update(const u16 &loc, Adafruit_Fingerprint &sensor)
+    return enlist(loc, R307);
+} // u8 update(const u16 &loc, Adafruit_Fingerprint &R307)
 
 #endif // _UPDATE_HPP

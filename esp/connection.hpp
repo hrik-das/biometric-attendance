@@ -4,7 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <Adafruit_SSD1306.h>
 
-extern Adafruit_SSD1306 display;
+extern Adafruit_SSD1306 SSD1306;
 extern const char *ssid;
 extern const char *passphrase;
 
@@ -37,10 +37,10 @@ void join_wifi()
     verify_conn();
     Serial.print(F("Connected to ")); Serial.println(ssid);
 
-    display.clearDisplay();
-    display.setCursor(40, 10); display.print(F("WIFI"));
-    display.setCursor(10, 38); display.print(F("CONNECTED"));
-    display.display();
+    SSD1306.clearDisplay();
+    SSD1306.setCursor(40, 10); SSD1306.print(F("WIFI"));
+    SSD1306.setCursor(10, 38); SSD1306.print(F("CONNECTED"));
+    SSD1306.display();
 
     Serial.print("ESP8266 IP: "); Serial.println(WiFi.localIP());
 } // void join_wifi()

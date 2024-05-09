@@ -6,7 +6,7 @@
 #include "http_post.hpp"
 #include "connection.hpp"
 
-extern Adafruit_SSD1306 display;
+extern Adafruit_SSD1306 SSD1306;
 
 /// @brief Denotes any of the special operations enlist, delist, or update
 /// that needs to be done for a user.
@@ -29,7 +29,7 @@ enum class Operation : u8 {
 /// @return `true` if an `Operation` needs to be done, `false` otherwise.
 bool check_EDU(Operation *op, u16 *loc, String *roll)
 {
-    Serial.print(F("remote.hpp:check_EDU"));
+    Serial.println(F("remote.hpp:check_EDU"));
 
     String postData = "check-edu=";
 
@@ -93,24 +93,24 @@ void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 
 
     String postData = "confirm-edu=";
 
-    display.clearDisplay();
-    display.setCursor(28, 2); display.print(operation);
-    display.setCursor(22, 20);
+    SSD1306.clearDisplay();
+    SSD1306.setCursor(28, 2); SSD1306.print(operation);
+    SSD1306.setCursor(22, 20);
     Serial.print(F("Sending ")); Serial.print(operation); Serial.print(F(" "));
 
     if (result) { /* != FINGERPRINT_OK */
         postData += "err";
-        display.print(F("FAILURE")); Serial.print(F("FAILURE"));
+        SSD1306.print(F("FAILURE")); Serial.print(F("FAILURE"));
     } else {
         postData += "ok";
-        display.print(F("SUCCESS")); Serial.print(F("SUCCESS"));
+        SSD1306.print(F("SUCCESS")); Serial.print(F("SUCCESS"));
     }
     
-    display.setTextSize(3);
-    display.setCursor((128 - 18 * (roll.length() + 1)) >> 1, 38);
-    display.print(F("#")); display.print(roll);
-    display.display();
-    display.setTextSize(2);
+    SSD1306.setTextSize(3);
+    SSD1306.setCursor((128 - 18 * (roll.length() + 1)) >> 1, 38);
+    SSD1306.print(F("#")); SSD1306.print(roll);
+    SSD1306.display();
+    SSD1306.setTextSize(2);
     Serial.print(F(" message for Roll No. ")); Serial.print(roll);
     Serial.print(F(" at Location: ")); Serial.println(loc);
 

@@ -3,15 +3,15 @@
 
 #include <Adafruit_SSD1306.h>
 
-extern Adafruit_SSD1306 display;
+extern Adafruit_SSD1306 SSD1306;
 
-/// @brief Displays `LOCAL ERROR` message on the OLED for `2` seconds.
+/// @brief Displays `LOCAL ERROR` message on the SSD1306 OLED for `2` seconds.
 void showLocalErrorMsg()
 {
-    display.clearDisplay();
-    display.setCursor(34, 10); display.print(F("LOCAL"));
-    display.setCursor(34, 38); display.print(F("ERROR"));
-    display.display();
+    SSD1306.clearDisplay();
+    SSD1306.setCursor(34, 10); SSD1306.print(F("LOCAL"));
+    SSD1306.setCursor(34, 38); SSD1306.print(F("ERROR"));
+    SSD1306.display();
     delay(2000);
 } // void showLocalErrorMsg()
 
@@ -21,9 +21,9 @@ void showLocalErrorMsg()
 /// @param bitmap Byte array with monochrome bitmap
 void draw64x64Bitmap(const u8 bitmap[])
 {
-    display.clearDisplay();
-    display.drawBitmap(33, 0, bitmap, 64, 64, WHITE);
-    display.display();
+    SSD1306.clearDisplay();
+    SSD1306.drawBitmap(33, 0, bitmap, 64, 64, WHITE);
+    SSD1306.display();
     delay(1000);
 } // void draw64x64Bitmap(const u8 bitmap[])
 
