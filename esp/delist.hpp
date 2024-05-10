@@ -1,44 +1,45 @@
 #ifndef _DELIST_HPP
 #define _DELIST_HPP 1
 
-#include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
 
-#include "boilerplate.hpp"
-
-extern Adafruit_SSD1306 display;
+#include "visuals.hpp"
 
 /// @brief Delete a user fingerprint at location `loc`.
 /// @param loc `[IN]` Location where user's fingerprint is to be deleted.
-/// @param sensor `[IN]` Object denoting a fingerprint sensor. Supply or
+/// @param R307 `[IN]` Object denoting the R307 fingerprint sensor. Supply or
 /// make available in caller scope. Should have same name as param.
 /// @return `FINGERPRINT_OK` if user was sucessfully deleted. Not `FINGERPRINT_OK`
 /// otherwise.
-uint8_t delist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.println(F("delist.hpp:delist"));
-    switch (sensor.deleteModel(loc)) {
+
+    u8 temp = R307.deleteModel(loc);
+    Serial.print(F("deleteModel(")); Serial.print(loc);
+    Serial.print(F("): ")); Serial.println(temp);
+
+    switch (temp) {
         case FINGERPRINT_OK:
             Serial.print(F("Deleted from Location: ")); Serial.println(loc);
-            return FINGERPRINT_OK;
+            return temp;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("delist.hpp:20:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("delist.hpp:18:FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            return FINGERPRINT_PACKETRECIEVEERR;
+            return temp;
         case FINGERPRINT_BADLOCATION:
-            Serial.println(F("delist.hpp:20:FINGERPRINT_BADLOCATION"));
+            Serial.println(F("delist.hpp:18:FINGERPRINT_BADLOCATION"));
             showLocalErrorMsg();
-            return FINGERPRINT_BADLOCATION;
+            return temp;
         case FINGERPRINT_FLASHERR:
-            Serial.println(F("delist.hpp:20:FINGERPRINT_FLASHERR"));
+            Serial.println(F("delist.hpp:18:FINGERPRINT_FLASHERR"));
             showLocalErrorMsg();
-            return FINGERPRINT_FLASHERR;
+            return temp;
+        default:
+            Serial.println(F("[UNDOCUMENTED]"));
+            showLocalErrorMsg();
+            return temp;
     }
-
-    // to suppress `control reaches end of non-void function` warning
-    // [`-Werror=return-type`]
-    // will never run
-    std::abort();
-} // uint8_t delist(const uint16_t loc, Adafruit_Fingerprint &sensor)
+} // u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 
 #endif // _DELIST_HPP
