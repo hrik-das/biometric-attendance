@@ -1,7 +1,9 @@
 <?php
-require_once("./include/connect.php");
-require_once("../include/essential.php");
+require_once("include/connect.php");
+require_once("include/essential.php");
+// TO CHANGE
 adminLogin();
+// TO CHANGE
 
 // to send to the ESP
 $payload = "";
@@ -50,7 +52,7 @@ if (isset($_POST["log-user-at"])) {
 // of student. This `else if` branch is connected with the next branch where ESP
 // sends confirmatin regarding whether the enlisting, delisting, or update
 // operation took place sucessfully.
-else if (isset($_POST["check-edu"]) && !empty($_SESSION["esp-edu"])) {
+else if (isset($_POST["check-edu"]) && $_SESSION["esp-block"]) {
     $payload .= $_SESSION["esp-edu"]["mode"] . $_SESSION["esp-edu"]["id"] .
                 "R" . $_SESSION["esp-edu"]["roll"];
     
@@ -64,8 +66,8 @@ else if (($_POST["confirm-edu"]) == "ok") {
     // Set success flag to true
     $_SESSION["esp-edu-success"] = true;
     // Finally let `ajax/students.php` control pass through
-    // `while($_SESSION["esp-edu"]) sleep(1);` part
-    unset($_SESSION["esp-edu"]);
+    // `while($_SESSION["esp-block"]) sleep(1);` part
+    $_SESSION["esp-block"] = false;
 }
 
 // Unsuccessful Enlist / Delist / Update
@@ -75,7 +77,7 @@ else if (($_POST["confirm-edu"]) == "err") {
     // Set success flag to false
     $_SESSION["esp-edu-success"] = false;
     // Finally let `ajax/students.php` control pass through
-    // `while($_SESSION["esp-edu"]) sleep(1);` part
-    unset($_SESSION["esp-edu"]);
+    // `while($_SESSION["esp-block"]) sleep(1);` part
+    $_SESSION["esp-block"] = false;
 }
 ?>
