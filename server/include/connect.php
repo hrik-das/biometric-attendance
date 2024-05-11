@@ -48,10 +48,10 @@
     * @param string $query SQL `INSERT`, `SELECT`, `UPDATE` or `DELETE` query
     * @param string $types type string
     * @param array ...$vars UNPACKED array, or simply comma-separated-values
-    * @return \mysqli_result|false|int|string
-    * Returns a `\mysqli_result` object or `false` for a sucessful or unsucessful
-    * `SELECT` `$query` respectively, `int` or `string` for no. of affected rows
-    * for the other queries
+    * @return \mysqli_result|false Returns a `\mysqli_result` object or `false`
+    * for a sucessful or unsucessful `SELECT` `$query` respectively.
+    * @return int|string `int` or `string` for no. of affected rows
+    * for the other queries.
     */
     function execCRUD($query, $types, ...$vars){
         $stmt = mysqli_prepare($GLOBALS["connect"], $query);    // Prepare the SQL statement

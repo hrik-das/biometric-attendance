@@ -7,38 +7,34 @@
 
 /// @brief Delete a user fingerprint at location `loc`.
 /// @param loc `[IN]` Location where user's fingerprint is to be deleted.
-/// @param R307 `[IN]` Object denoting the R307 fingerprint sensor. Supply or
-/// make available in caller scope. Should have same name as param.
+/// @param R307 `[IN]` Object denoting the R307 fingerprint sensor.
 /// @return `FINGERPRINT_OK` if user was sucessfully deleted. Not `FINGERPRINT_OK`
 /// otherwise.
 u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.println(F("delist.hpp:delist"));
+    Serial.print(F("delist.hpp:18:deleteModel:loc - ")); Serial.print(loc);
 
-    u8 temp = R307.deleteModel(loc);
-    Serial.print(F("deleteModel(")); Serial.print(loc);
-    Serial.print(F("): ")); Serial.println(temp);
-
-    switch (temp) {
+    switch (R307.deleteModel(loc)) {
         case FINGERPRINT_OK:
-            Serial.print(F("Deleted from Location: ")); Serial.println(loc);
-            return temp;
+            Serial.println(F(" :FINGERPRINT_OK"));
+            return FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("delist.hpp:18:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F(" :FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
-            Serial.println(F("delist.hpp:18:FINGERPRINT_BADLOCATION"));
+            Serial.println(F(" :FINGERPRINT_BADLOCATION"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_FLASHERR:
-            Serial.println(F("delist.hpp:18:FINGERPRINT_FLASHERR"));
+            Serial.println(F(" :FINGERPRINT_FLASHERR"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         default:
-            Serial.println(F("[UNDOCUMENTED]"));
+            Serial.println(F(" :<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
     }
 } // u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 

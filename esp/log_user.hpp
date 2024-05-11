@@ -21,87 +21,89 @@ extern String roll;
 /// on failure.
 u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 {
-    Serial.println(F("login.hpp:check_for_valid_user"));
+    Serial.println(F("log_user.hpp:check_for_valid_user"));
+    Serial.print(F("log_user.hpp:27:getImage:"));
 
-    u8 temp = R307->getImage();
-    Serial.print(F("getImage(): ")); Serial.println(temp);
-
-    switch (temp) {
+    switch (R307->getImage()) {
         case FINGERPRINT_OK:
+            Serial.println(F("FINGERPRINT_OK"));
             break;
         case FINGERPRINT_NOFINGER:
+            Serial.println(F("FINGERPRINT_NOFINGER"));
             draw64x64Bitmap(SYS_IDLE);
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:26:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_IMAGEFAIL:
-            Serial.println(F("login.hpp:26:FINGERPRINT_IMAGEFAIL"));
+            Serial.println(F("FINGERPRINT_IMAGEFAIL"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         default:
-            Serial.println(F("[UNDOCUMENTED]"));
+            Serial.println(F("<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
     }
 
-    temp = R307->image2Tz();
-    Serial.print(F("image2Tz(): ")); Serial.println(temp);
+    Serial.print(F("log_user.hpp:51:image2Tz:"));
 
-    switch (temp) {
+    switch (R307->image2Tz()) {
         case FINGERPRINT_OK:
+            Serial.println(F("FINGERPRINT_OK"));
             break;
         case FINGERPRINT_IMAGEMESS:
+            Serial.println(F("FINGERPRINT_IMAGEMESS"));
             draw64x64Bitmap(NOT_FOUND);
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:49:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_FEATUREFAIL:
-            Serial.println(F("login.hpp:49:FINGERPRINT_FEATUREFAIL"));
+            Serial.println(F("FINGERPRINT_FEATUREFAIL"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_INVALIDIMAGE:
-            Serial.println(F("login.hpp:49:FINGERPRINT_INVALIDIMAGE"));
+            Serial.println(F("FINGERPRINT_INVALIDIMAGE"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         default:
-            Serial.println(F("[UNDOCUMENTED]"));
+            Serial.println(F("<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
     }
 
-    temp = R307->fingerFastSearch();
-    Serial.print(F("fingerFastSearch(): ")); Serial.println(temp);
+    Serial.print(F("log_user.hpp:51:fingerFastSearch:"));
 
-    switch (temp) {
+    switch (R307->fingerFastSearch()) {
         case FINGERPRINT_OK:
+            Serial.println(F("FINGERPRINT_OK"));
             draw64x64Bitmap(FOUND);
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_NOTFOUND:
+            Serial.println(F("FINGERPRINT_NOTFOUND"));
             draw64x64Bitmap(NOT_FOUND);
-            return temp;
+            return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("login.hpp:76:FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
         default:
-            Serial.println(F("[UNDOCUMENTED]"));
+            Serial.println(F("<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
-            return temp;
+            return ~FINGERPRINT_OK;
     }
 } // u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 
 /// @brief Sends matched template location to configured `send_url`. Prints Roll
-/// No. of associated user, otherwise `REMOTE ERROR`. Call only if `u8
+/// No. of associated user, otherwise `REMOTE ERROR`. Call ONLY if `u8
 /// check_for_valid_user (Adafruit_Fingerprint *R307)` returns `FINGERPRINT_OK`.
 /// @param R307 `[IN]` Same object that was previously passed to `u8
 /// check_for_valid_user (Adafruit_Fingerprint &R307)`.
 void log_user(const Adafruit_Fingerprint &R307)
 {
-    Serial.println(F("login.hpp:log_user"));
+    Serial.println(F("log_user.hpp:log_user"));
     
     // [R307 library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]
@@ -111,7 +113,7 @@ void log_user(const Adafruit_Fingerprint &R307)
 
     String payload = httpPOST(postData);
 
-    Serial.print(F("Logging user at location: ")); Serial.println(R307.fingerID);
+    Serial.print(F("Logging user at loc: ")); Serial.println(R307.fingerID);
 
     SSD1306.clearDisplay();
 

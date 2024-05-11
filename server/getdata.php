@@ -1,9 +1,5 @@
 <?php
 require_once("include/connect.php");
-require_once("include/essential.php");
-// TO CHANGE
-adminLogin();
-// TO CHANGE
 
 // to send to the ESP
 $payload = "";
@@ -12,72 +8,79 @@ $payload = "";
 if (isset($_POST["log-user-at"])) {
     // get roll number of student
     $query = "SELECT `roll_no` FROM `users_all` WHERE `fingerprint_id` = ?;";
-    $users_all_rs = execCRUD($query, "i", $_POST["log-user-at"]);
-    $users_all_row = $users_all_rs->fetch_assoc();
+    $logged_rs = execCRUD($query, "i", $_POST["log-user-at"]);
+    $logged_roll = $logged_rs->fetch_assoc()["roll_no"];
     // Send either
-    // `"L" . $_POST["log-user-at"] . "R" . $users_all_row["roll_no"]
+    // `"L" . $_POST["log-user-at"] . "R" . $logged_roll`
     // or simply,
-    // "R" . $users_all_row["roll_no"]
-    $payload .= "R" . $users_all_row["roll_no"];
+    // `"R" . $logged_roll`
+    $payload .= "R" . $logged_roll;
 
     // check if student has already logged into the daily records
     $query = "SELECT * FROM `attendance_log`
                 WHERE `roll_no` = ? AND `date` = CURDATE();";
-    // $users_all_rs will have always have one row. A $_POST["log-user-at"]
+    // $logged_rs will have always have one row. A $_POST["log-user-at"]
     // sent by the ESP will always have a corresponding `users_all`
     // (`fingerprint_id`) WHERE `fingerprint_id` = $_POST["log-user-at"]
-    $attendance_log_rs = execCRUD($query, "i", $users_all_row["roll_no"]);
+    $attendance_log_rs = execCRUD($query, "i", $logged_roll);
     if ($attendance_log_rs->num_rows /* == 1 */) {
         // student student has already logged in
         echo $payload;
-        exit($users_all_row["roll_no"] . " already logged in.");
+        exit($logged_roll . " already logged in.");
     }
 
     // otherwise, log student into the daily records
     $query = "INSERT INTO attendance_log (roll_no) VALUES (?)";
-    $inserted_rows = execCRUD($query, "i", $users_all_row["roll_no"]);
+    $inserted_rows = execCRUD($query, "i", $logged_roll);
 
     if ($inserted_rows != 1)
         // no rows inserted, something is wrong.
         exit("Failure executing query: "
             . "INSERT INTO attendance_log (roll_no) VALUES ("
-            . $users_all_row["roll_no"] . ")");
+            . $logged_roll . ")");
 
     echo $payload;
-    exit($users_all_row["roll_no"] . " logged in just now.");
+    exit($logged_roll . " logged in just now.");
 }
 
-// Response to when ESP sends `check-edu=` for checking if a user is to be
-// enlisted, delisted, or updated. Server sends (E|D|U){fingerprint_id}R{roll_no}
-// of student. This `else if` branch is connected with the next branch where ESP
-// sends confirmatin regarding whether the enlisting, delisting, or update
+$esp_edu_state_rs = mysqli_query($connect, "SELECT * FROM `esp_edu_state`");
+
+if (mysqli_num_rows($esp_edu_state_rs) != 1)
+    exit;
+
+// Server sends (E|D|U){fingerprint_id}R{roll_no} of student.
+// This `if` branch is connected with the next `else` branch where ESP
+// sends confirmation regarding whether the enlisting, delisting, or update
 // operation took place sucessfully.
-else if (isset($_POST["check-edu"]) && $_SESSION["esp-block"]) {
-    $payload .= $_SESSION["esp-edu"]["mode"] . $_SESSION["esp-edu"]["id"] .
-                "R" . $_SESSION["esp-edu"]["roll"];
+if (isset($_POST["check-edu"])) {
+    $esp_edu_state_row = mysqli_fetch_assoc($esp_edu_state_rs);
+    $payload .=
+        $esp_edu_state_row["mode"] . $esp_edu_state_row["fingerprint_id"]
+        . "R" . $esp_edu_state_row["roll_no"];
     
     echo $payload;
+    exit($payload);
 }
 
-// Successful Enlist / Delist / Update
-else if (($_POST["confirm-edu"]) == "ok") {
-    // COMMIT TRANSACTION
-    mysqli_query($connect, "COMMIT;");
-    // Set success flag to true
-    $_SESSION["esp-edu-success"] = true;
-    // Finally let `ajax/students.php` control pass through
-    // `while($_SESSION["esp-block"]) sleep(1);` part
-    $_SESSION["esp-block"] = false;
-}
+else switch ($_POST["confirm-edu"]) {
+    // Successful Enlist / Delist / Update
+    case 'ok':
+        mysqli_commit($connect);
+        // Set success flag to true
+        mysqli_query($connect, "UPDATE `esp_edu_state` SET `success` = 1");
+        // Finally let `ajax/edu.php` control pass through
+        // `while(...) sleep(1);` part
+        mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
+        exit("confirm-edu=ok");
 
-// Unsuccessful Enlist / Delist / Update
-else if (($_POST["confirm-edu"]) == "err") {
-    // ROLLBACK TRANSACTION
-    mysqli_query($connect, "ROLLBACK;");
-    // Set success flag to false
-    $_SESSION["esp-edu-success"] = false;
-    // Finally let `ajax/students.php` control pass through
-    // `while($_SESSION["esp-block"]) sleep(1);` part
-    $_SESSION["esp-block"] = false;
+    // Unsuccessful Enlist / Delist / Update
+    case 'err':
+        mysqli_rollback($connect);
+        // Set success flag to false
+        mysqli_query($connect, "UPDATE `esp_edu_state` SET `success` = 0");
+        // Finally let `ajax/edu.php` control pass through
+        // `while(...) sleep(1);` part
+        mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
+        exit("confirm-edu=err");
 }
 ?>

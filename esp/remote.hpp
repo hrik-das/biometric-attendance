@@ -48,12 +48,12 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
         default: std::abort();
         }} ();
 
-    u8 idx_roll = payload.indexOf('R');
+    u8 idx_R = payload.indexOf('R');
 
     // [sensor library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]
-    *loc = payload.substring(1, idx_roll).toInt() - 1;
-    *roll = payload.substring(idx_roll + 1);
+    *loc = payload.substring(1, idx_R).toInt() - 1;
+    *roll = payload.substring(idx_R + 1);
 
     Serial.print([&op] { switch (*op) {
         case Operation::Enlist: return "Enlist";
