@@ -27,7 +27,7 @@ function addStudent(){
     data.append("date", addStudentForm.elements["date"].value);
     data.append("add-student", "");
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", "./ajax/edu.php", true);
+    xhr.open("POST", "./ajax/students.php", true);
     xhr.onload = function(){
         if(xhr.status >= 200 && xhr.status < 300){
             var myModal = document.getElementById("add-student");
@@ -73,7 +73,7 @@ function removeStudent(rollNumber){
         data.append("roll", rollNumber);
         data.append("remove-student", "");
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "./ajax/edu.php", true);
+        xhr.open("POST", "./ajax/students.php", true);
         xhr.onload = function(){
             if(xhr.status >= 200 && xhr.status < 300){
                 if(this.responseText == 1){
@@ -128,7 +128,7 @@ function updateStudent(){
     data.append("id", editStudentForm.elements["id"].value);
     data.append("update-details", "");
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", "./ajax/edu.php", true);
+    xhr.open("POST", "./ajax/students.php", true);
     xhr.onload = function(){
         if(xhr.status >= 200 && xhr.status < 300){
             var myModal = document.getElementById("edit-student");

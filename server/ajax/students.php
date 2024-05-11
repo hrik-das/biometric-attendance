@@ -2,6 +2,7 @@
     require_once("../include/connect.php");
     require_once("../include/essential.php");
     adminLogin();
+    require_once("students-edu.php");
 
     // TO SHOW ALL ENLISTED STUDENT DATA ON THE TABLE ON LOAD
     if(isset($_POST["get-all-enlisted"])){
@@ -38,7 +39,7 @@
     }
 
     // TO SHOW STUDENT'S PREVIOUS DATA ON THE INPUT FIELD
-    if(isset($_POST["get-student"])){
+    else if(isset($_POST["get-student"])){
         $filterData = filteration($_POST);    // Filter the submitted form data for security
         $query = "SELECT * FROM `users_all` WHERE `roll_no`=?";    // Construct the SQL query to select student data based on roll number
         $result = execCRUD($query, "i", $filterData["get-student"]);    // Execute the SQL query using execCRUD function with the roll number parameter
@@ -47,7 +48,7 @@
         echo $data;    // Echo the JSON data representing the student information
     }
 
-    if(isset($_POST["search-student"])){
+    else if(isset($_POST["search-student"])){
         $filterData = filteration($_POST);
         $searchTerm = "%{$filterData['value']}%"; // Add wildcards to the search term
         // Prepare the query
@@ -76,7 +77,7 @@
         echo $data;
     }
 
-    if(isset($_POST["dropdown-sem"])){
+    else if(isset($_POST["dropdown-sem"])){
         $filterData = filteration($_POST);
         $_SESSION["dropdown-sem"] = $filterData["dropdown-sem"];
         $query = "SELECT * FROM `users_all` WHERE `semester`";
@@ -119,7 +120,7 @@
         echo $data;
     }
 
-    if(isset($_POST["dropdown-reg-status"])){
+    else if(isset($_POST["dropdown-reg-status"])){
         $filterData = filteration($_POST);
         $i = 1;
         $data = "";
