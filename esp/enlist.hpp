@@ -19,7 +19,7 @@ extern Adafruit_SSD1306 SSD1306;
 /// otherwise. `FINGERPRINT_TIMEOUT` if function waited for 6 full seconds.
 u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
 {
-    Serial.print(F("enlist.hpp:process_image:slot - ")); Serial.println(slot);
+    Serial.print(F("enlist.hpp:process_image:slot:")); Serial.println(slot);
     u8 temp = ~FINGERPRINT_OK;
     u8 time_left = 6;
     Ticker timer;
@@ -38,29 +38,29 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
             return FINGERPRINT_TIMEOUT;
         }
 
-        Serial.print(F("enlist.hpp:43:getImage:slot - ")); Serial.print(slot);
+        Serial.print(F("enlist.hpp:43:getImage:slot:")); Serial.print(slot);
 
         temp = R307.getImage();
 
         switch (temp) {
             case FINGERPRINT_OK:
-                Serial.println(F(" :FINGERPRINT_OK"));
+                Serial.println(F(":FINGERPRINT_OK"));
                 draw64x64Bitmap(FOUND);
                 break;
             case FINGERPRINT_NOFINGER:
-                Serial.println(F(" :FINGERPRINT_NOFINGER"));
+                Serial.println(F(":FINGERPRINT_NOFINGER"));
                 draw64x64Bitmap(SCANNING);
                 break;
             case FINGERPRINT_PACKETRECIEVEERR:
-                Serial.println(F(" :FINGERPRINT_PACKETRECIEVEERR"));
+                Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
                 showLocalErrorMsg();
                 break;
             case FINGERPRINT_IMAGEFAIL:
-                Serial.println(F(" :FINGERPRINT_IMAGEFAIL"));
+                Serial.println(F(":FINGERPRINT_IMAGEFAIL"));
                 showLocalErrorMsg();
                 break;
             default:
-                Serial.println(F(" :<--UNDOCUMENTED-->"));
+                Serial.println(F(":<--UNDOCUMENTED-->"));
                 showLocalErrorMsg();
                 break;
         }
@@ -68,29 +68,29 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
 
     timer.detach();
 
-    Serial.print(F("enlist.hpp:73:image2Tz:slot - ")); Serial.print(slot);
+    Serial.print(F("enlist.hpp:73:image2Tz:slot:")); Serial.print(slot);
 
     switch (R307.image2Tz(slot)) {
         case FINGERPRINT_OK:
-            Serial.println(F(" :FINGERPRINT_OK"));
+            Serial.println(F(":FINGERPRINT_OK"));
             return FINGERPRINT_OK;
         case FINGERPRINT_IMAGEMESS:
             draw64x64Bitmap(NOT_FOUND);
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F(" :FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FEATUREFAIL:
-            Serial.println(F(" :FINGERPRINT_FEATUREFAIL"));
+            Serial.println(F(":FINGERPRINT_FEATUREFAIL"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_INVALIDIMAGE:
-            Serial.println(F(" :FINGERPRINT_INVALIDIMAGE"));
+            Serial.println(F(":FINGERPRINT_INVALIDIMAGE"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
-            Serial.println(F(" :<--UNDOCUMENTED-->"));
+            Serial.println(F(":<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
@@ -145,27 +145,27 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
             return ~FINGERPRINT_OK;
     }
     
-    Serial.print(F("enlist.hpp:150:storeModel:loc - ")); Serial.print(loc);
+    Serial.print(F("enlist.hpp:150:storeModel:loc:")); Serial.print(loc);
 
     switch (R307.storeModel(loc)) {
         case FINGERPRINT_OK:
-            Serial.println(F(" :FINGERPRINT_OK"));
+            Serial.println(F(":FINGERPRINT_OK"));
             draw64x64Bitmap(FOUND);
             return FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
-            Serial.println(F(" :FINGERPRINT_BADLOCATION"));
+            Serial.println(F(":FINGERPRINT_BADLOCATION"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FLASHERR:
-            Serial.println(F(" :FINGERPRINT_FLASHERR"));
+            Serial.println(F(":FINGERPRINT_FLASHERR"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F(" :FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
-            Serial.println(F(" :<--UNDOCUMENTED-->"));
+            Serial.println(F(":<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
     }

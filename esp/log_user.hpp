@@ -78,7 +78,8 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 
     switch (R307->fingerFastSearch()) {
         case FINGERPRINT_OK:
-            Serial.println(F("FINGERPRINT_OK"));
+            Serial.println(F("FINGERPRINT_OK:loc:"));
+            Serial.println(R307->fingerID);
             draw64x64Bitmap(FOUND);
             return ~FINGERPRINT_OK;
         case FINGERPRINT_NOTFOUND:

@@ -12,7 +12,7 @@ extern const char *passphrase;
 /// that ESP is connected to WiFi. Reconnects if connection is lost.
 void verify_conn()
 {
-    Serial.println(F("connection.hpp:verify_conn"));
+    // Serial.println(F("connection.hpp:verify_conn"));
     while (WiFi.status() != WL_CONNECTED) {
         // From the docs:
         // [By default, ESP will attempt to reconnect to Wi-Fi network whenever it is disconnected.]

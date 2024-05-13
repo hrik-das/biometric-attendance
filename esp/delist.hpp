@@ -13,26 +13,26 @@
 u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.println(F("delist.hpp:delist"));
-    Serial.print(F("delist.hpp:18:deleteModel:loc - ")); Serial.print(loc);
+    Serial.print(F("delist.hpp:18:deleteModel:loc:")); Serial.print(loc);
 
     switch (R307.deleteModel(loc)) {
         case FINGERPRINT_OK:
-            Serial.println(F(" :FINGERPRINT_OK"));
+            Serial.println(F(":FINGERPRINT_OK"));
             return FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F(" :FINGERPRINT_PACKETRECIEVEERR"));
+            Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
-            Serial.println(F(" :FINGERPRINT_BADLOCATION"));
+            Serial.println(F(":FINGERPRINT_BADLOCATION"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FLASHERR:
-            Serial.println(F(" :FINGERPRINT_FLASHERR"));
+            Serial.println(F(":FINGERPRINT_FLASHERR"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
-            Serial.println(F(" :<--UNDOCUMENTED-->"));
+            Serial.println(F(":<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
             return ~FINGERPRINT_OK;
     }

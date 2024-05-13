@@ -21,12 +21,13 @@ String httpPOST(const String postData)
     http.begin(wifi, send_url);
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
+    Serial.print(F("Request payload: ")); Serial.println(postData);
+
     int httpCode = http.POST(postData);
     String payload = http.getString();
     http.end();
 
-    Serial.print(F("Request payload: ")); Serial.println(postData);
-    Serial.print(F("HTTP return code: ")); Serial.println(httpCode);
+    Serial.print(F("HTTP response status code: ")); Serial.println(httpCode);
     Serial.print(F("Response payload: ")); Serial.println(payload);
 
     return payload;
