@@ -5,10 +5,14 @@
 if (isset($_POST["add-student"])) {
     $filterData = filteration($_POST);
 
-    // get `fingerprint_id` of same student
-    $query = "SELECT `fingerprint_id` FROM `users_all` WHERE `roll_no` = ?";
-    $enlist_id_rs = execCRUD($query, "i", $filterData["roll"]);
-    $ESP_E_id = mysqli_fetch_assoc($enlist_id_rs)["fingerprint_id"];
+    // get `fingerprint_id` of student to be entered
+    $query = "SELECT `AUTO_INCREMENT`
+                FROM INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_SCHEMA = 'attendance' AND TABLE_NAME = 'users_all'";
+    
+    $enlist_id_rs = mysqli_query($connect, $query);
+    // because `fingerprint_id` is primary key
+    $ESP_E_id = mysqli_fetch_assoc($enlist_id_rs)["AUTO_INCREMENT"];
 
     $query = "INSERT INTO `esp_edu_state` (`mode`, `fingerprint_id`, `roll_no`, `server_block`)
                 VALUES (?, ?, ?, ?)";
