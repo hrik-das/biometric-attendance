@@ -26,7 +26,7 @@ if (isset($_POST["log-user-at"])) {
     if ($attendance_log_rs->num_rows /* == 1 */) {
         // student student has already logged in
         echo $payload;
-        exit($logged_roll . " already logged in.");
+        exit(0);
     }
 
     // otherwise, log student into the daily records
@@ -35,18 +35,16 @@ if (isset($_POST["log-user-at"])) {
 
     if ($inserted_rows != 1)
         // no rows inserted, something is wrong.
-        exit("Failure executing query: "
-            . "INSERT INTO attendance_log (roll_no) VALUES ("
-            . $logged_roll . ")");
+        exit(1);
 
     echo $payload;
-    exit($logged_roll . " logged in just now.");
+    exit(0);
 }
 
 $esp_edu_state_rs = mysqli_query($connect, "SELECT * FROM `esp_edu_state`");
 
 if (mysqli_num_rows($esp_edu_state_rs) != 1)
-    exit;
+    exit(1);
 
 // Server sends (E|D|U){fingerprint_id}R{roll_no} of student.
 // This `if` branch is connected with the next `else` branch where ESP
@@ -59,7 +57,7 @@ if (isset($_POST["check-edu"])) {
         . "R" . $esp_edu_state_row["roll_no"];
     
     echo $payload;
-    exit($payload);
+    exit(0);
 }
 
 else switch ($_POST["confirm-edu"]) {
@@ -71,7 +69,7 @@ else switch ($_POST["confirm-edu"]) {
         // Finally let `ajax/edu.php` control pass through
         // `while(...) sleep(1);` part
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
-        exit("confirm-edu=ok");
+        exit(0);
 
     // Unsuccessful Enlist / Delist / Update
     case 'err':
@@ -81,6 +79,6 @@ else switch ($_POST["confirm-edu"]) {
         // Finally let `ajax/edu.php` control pass through
         // `while(...) sleep(1);` part
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
-        exit("confirm-edu=err");
+        exit(0);
 }
 ?>
