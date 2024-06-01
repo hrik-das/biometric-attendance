@@ -21,8 +21,10 @@ extern String roll;
 /// on failure.
 u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 {
-    Serial.println(F("log_user.hpp:check_for_valid_user"));
-    Serial.print(F("log_user.hpp:27:getImage:"));
+    Serial.print(__FILE__); Serial.println(F(":check_for_valid_user"));
+
+    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(F(":getImage:"));
 
     switch (R307->getImage()) {
         case FINGERPRINT_OK:
@@ -46,7 +48,8 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
     }
 
-    Serial.print(F("log_user.hpp:51:image2Tz:"));
+    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(F(":image2Tz:"));
 
     switch (R307->image2Tz()) {
         case FINGERPRINT_OK:
@@ -74,7 +77,8 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
     }
 
-    Serial.print(F("log_user.hpp:51:fingerFastSearch:"));
+    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(F(":fingerFastSearch:"));
 
     switch (R307->fingerFastSearch()) {
         case FINGERPRINT_OK:
@@ -104,7 +108,7 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 /// check_for_valid_user (Adafruit_Fingerprint &R307)`.
 void log_user(const Adafruit_Fingerprint &R307)
 {
-    Serial.println(F("log_user.hpp:log_user"));
+    Serial.print(__FILE__); Serial.println(F(":log_user"));
     
     // [R307 library : server database] `Fingerprint_ID` (Template
     // Location) mapping is [`N`: `N + 1`]

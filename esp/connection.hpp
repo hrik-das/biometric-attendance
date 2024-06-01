@@ -12,19 +12,18 @@ extern const char *passphrase;
 /// that ESP is connected to WiFi. Reconnects if connection is lost.
 void verify_conn()
 {
-    // Serial.println(F("connection.hpp:verify_conn"));
-    while (WiFi.status() != WL_CONNECTED) {
+    while (WiFi.status() != WL_CONNECTED)
         // From the docs:
         // [By default, ESP will attempt to reconnect to Wi-Fi network whenever it is disconnected.]
         // (https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/station-class.html#start-here)
         delay(500);
-    }
 } // void verify_conn()
 
 /// @brief Connect to WiFi.
 void join_wifi()
 {
-    Serial.println(F("connection.hpp:join_wifi"));
+    Serial.print(__FILE__); Serial.println(F(":join_wifi"));
+
     // Make sure WiFi is OFF
     WiFi.mode(WIFI_OFF);
     delay(1000);
@@ -33,9 +32,9 @@ void join_wifi()
 
     WiFi.begin(ssid, passphrase);
 
-    Serial.print(F("Connecting to ")); Serial.println(ssid);
+    Serial.print(F("Connecting to: ")); Serial.println(ssid);
     verify_conn();
-    Serial.print(F("Connected to ")); Serial.println(ssid);
+    Serial.print(F("Connected to:  ")); Serial.println(ssid);
 
     SSD1306.clearDisplay();
     SSD1306.setCursor(40, 10); SSD1306.print(F("WIFI"));

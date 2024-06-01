@@ -29,7 +29,7 @@ enum class Operation : u8 {
 /// @return `true` if an `Operation` needs to be done, `false` otherwise.
 bool check_EDU(Operation *op, u16 *loc, String *roll)
 {
-    Serial.println(F("remote.hpp:check_EDU"));
+    Serial.print(__FILE__); Serial.println(F(":check_EDU"));
 
     String postData = "check-edu=";
 
@@ -41,7 +41,7 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
         // Server did not return anything, nothing to do.
         return false;
 
-    *op = [&payload] { switch (payload.substring(0, 1)[0]) {
+    *op = [&payload] { switch (payload[0]) {
         case 'E': return Operation::Enlist;
         case 'D': return Operation::Delist;
         case 'U': return Operation::Update;
@@ -80,7 +80,7 @@ bool check_EDU(Operation *op, u16 *loc, String *roll)
 /// `FINGERPRINT_OK` otherwise.
 void confirm_EDU(const Operation op, const u16 loc, const String roll, const u8 result)
 {
-    Serial.print(F("remote.hpp:confirm_EDU:"));
+    Serial.print(__FILE__); Serial.println(F(":confirm_EDU:"));
 
     String operation = [&op] { switch (op) {
         case Operation::Enlist: return "ENLIST";

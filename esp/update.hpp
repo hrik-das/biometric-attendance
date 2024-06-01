@@ -13,11 +13,9 @@
 /// `FINGERPRINT_OK` otherwise. 
 u8 update(const u16 loc, Adafruit_Fingerprint &R307)
 {
-    Serial.println(F("update.hpp:update"));
-    if (delist(loc, R307) /* != FINGERPRINT_OK */ )
-        return ~FINGERPRINT_OK;
-
-    return enlist(loc, R307);
+    Serial.print(__FILE__); Serial.println(F(":update"));
+    
+    return delist(loc, R307) ? ~FINGERPRINT_OK : enlist(loc, R307);
 } // u8 update(const u16 &loc, Adafruit_Fingerprint &R307)
 
 #endif // _UPDATE_HPP
