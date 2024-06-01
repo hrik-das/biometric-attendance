@@ -12,8 +12,14 @@
 #include "visuals.hpp"
 #include "bitmap.h"
 
-// #define USUAL_WORKFLOW
-#define EMPTY_DATABASE
+/// @brief ONLY ONE of the following three is to be defined
+
+/// @brief For the usual workflow of the system
+#define USUAL_WORKFLOW 1
+/// @brief For emptying the R307 sensor fingerprint database
+// #define EMPTY_DATABASE 1
+/// @brief For trying out misc stuff
+// #define PLAYGROUND 1
 
 #define R307_RX D3
 #define R307_TX D4
@@ -47,9 +53,10 @@ const char *passphrase =
 const String send_url = 
 "http://192.168.121.189:80/bas/getdata.php";
 
-#if defined(USUAL_WORKFLOW)
+#ifdef USUAL_WORKFLOW
 
-void setup() {
+void setup()
+{
     Serial.begin(115200);
     Serial.print(F("\r\n\nesp.ino:setup"));
 
@@ -59,7 +66,7 @@ void setup() {
     // Address 0x3D for 128x64
     if (!SSD1306.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         Serial.println(F("SSD1306 Allocation failed."));
-        while (1) delay(2000);
+        while (true) delay(ULONG_LONG_MAX);
     }
 
     // Show Adafruit Logo for 2 seconds at startup
@@ -83,7 +90,7 @@ void setup() {
         // Sensor is not active or repsonding
         Serial.println(F("Did not find fingerprint sensor"));
         showLocalErrorMsg();
-        while (1) delay(1);
+        while (true) delay(ULONG_LONG_MAX);
     }
 
     // Sensor is active and responding
@@ -104,11 +111,11 @@ void setup() {
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
             showLocalErrorMsg();
-            while(1) delay(2000);
+            while (true) delay(ULONG_LONG_MAX);
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
             showLocalErrorMsg();
-            while(1) delay(2000);
+            while (true) delay(ULONG_LONG_MAX);
     }
 
     Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 1);
@@ -117,7 +124,8 @@ void setup() {
     delay(1000);
 }
 
-void loop() {
+void loop()
+{
     Serial.println(F("esp.ino:loop"));
 
     // ==============================================================
@@ -153,11 +161,15 @@ void loop() {
     }
 }
 
-#elif defined(EMPTY_DATABASE)
+#endif
 
-void setup() {
+#ifdef EMPTY_DATABASE
+
+void setup()
+{
     Serial.begin(115200);
-    Serial.println(F("\r\n\nesp.ino:setup"));
+
+    Serial.println(F("\r\n\nesp.ino:setup\r\nEMPTY_DATABASE mode."));
 
     R307.begin(57600);
     
@@ -166,110 +178,47 @@ void setup() {
     if (!R307.verifyPassword()) {
         // Sensor is not active or repsonding
         Serial.println(F("Did not find fingerprint sensor"));
-        showLocalErrorMsg();
-        // goto setupexit;
         return;
     }
 
     Serial.println(F("Found fingerprint sensor!"));
     
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
-    Serial.print(F(":getTemplateCount:"));
+    Serial.print(F("getTemplateCount:")); Serial.println(R307.getTemplateCount());
+    Serial.print(F("templateCount:")); Serial.println(R307.templateCount);
 
-    switch (R307.getTemplateCount()) {
-        case FINGERPRINT_OK:
-            Serial.println(F("FINGERPRINT_OK"));
-            draw64x64Bitmap(FOUND);
-            break;
-        case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-        default:
-            Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-    }
-
-    // R307.getTemplateCount();
-
-    Serial.print(__FILE__ + ':' + __LINE__ + 1);
-    Serial.println(":templateCount:"); Serial.println(R307.templateCount);
-
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
-    Serial.print(F(":emptyDatabase:"));
-
-    switch (R307.emptyDatabase()) {
-        case FINGERPRINT_OK:
-            Serial.println(F("FINGERPRINT_OK"));
-            draw64x64Bitmap(FOUND);
-            break;
-        case FINGERPRINT_BADLOCATION:
-            Serial.println(F("FINGERPRINT_BADLOCATION"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-        case FINGERPRINT_FLASHERR:
-            Serial.println(F("FINGERPRINT_FLASHERR"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-        case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-        default:
-            Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-    }
-
-    // R307.emptyDatabase();
-
-    Serial.println(F("Done."));
+    Serial.print(F("emptyDatabase:")); Serial.println(R307.emptyDatabase());
+    Serial.println(F("DONE."));
     
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
-    Serial.print(F(":getTemplateCount:"));
-
-    switch (R307.getTemplateCount()) {
-        case FINGERPRINT_OK:
-            Serial.println(F("FINGERPRINT_OK"));
-            draw64x64Bitmap(FOUND);
-            break;
-        case FINGERPRINT_PACKETRECIEVEERR:
-            Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-        default:
-            Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
-            // goto setupexit;
-            break;
-            // return;
-    }
-
-    // R307.getTemplateCount();
-
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
-    Serial.println(":templateCount:");
-    
-    Serial.println(R307.templateCount);
-
-// setupexit:
+    Serial.print(F("getTemplateCount:")); Serial.println(R307.getTemplateCount());
+    Serial.print(F("templateCount:")); Serial.println(R307.templateCount);
 }
 
-void loop() {}
+void loop()
+{
+
+}
+
+#endif
+
+#ifdef PLAYGROUND
+
+void setup()
+{
+    Serial.begin(115200);
+    Serial.println(F("\r\n\nesp.ino:setup\r\nPLAYGROUND mode."));
+}
+
+void loop()
+{
+    static int a = 0;
+    a++;
+    delay(1000);
+    if (a < 5) {
+        Serial.println(F("a < 5: returning from loop()"));
+        return;
+    } else {
+        Serial.println(F("a >= 5: not returning from loop()"));
+    }
+}
 
 #endif
