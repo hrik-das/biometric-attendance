@@ -22,7 +22,7 @@
     * @return void Redirects the user to the specified URL.
     */
     function redirect($url){
-        echo "<script>window.location.href = '$url';</script>";    // Output JavaScript code to redirect the user
+        echo "<script> window.location.href = '$url'; </script>";    // Output JavaScript code to redirect the user
         exit();    // Exit the script to ensure no further code execution after redirection
     }
 

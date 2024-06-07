@@ -1,5 +1,5 @@
 <?php
-    opcache_compile_file("getdata.php");
+    // opcache_compile_file("getdata.php");
     require_once("./include/essential.php");
     adminLogin();
 ?>

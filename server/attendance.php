@@ -38,7 +38,7 @@
                                 </select>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <input type="text" class="form-control-sm shadow-none me-3 border-none" oninput="searchStudent(this.value)" placeholder="Search Student">
+                                <input type="text" class="form-control-sm shadow-none" oninput="searchStudent(this.value)" placeholder="Search Student">
                             </div>
                         </div>
                         <div class="table-responsive-lg" style="height: 350px; overflow-y: scroll;">
