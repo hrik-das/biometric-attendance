@@ -1,0 +1,3 @@
+1. Get arduino-cli from your favourite package manager or https://github.com/arduino/arduino-cli.
+
+2. Follow steps from: https://gist.github.com/adi-g15/de41e96079a5b63045e86dc7c8c5c87e

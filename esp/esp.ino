@@ -36,7 +36,7 @@ u16 loc;
 /// done for a user, if any.
 Operation op;
 /// @brief Utility object for holding the roll no. of a student
-///  whenever needed.
+/// whenever needed.
 String roll;
 
 /// @brief Global OLED SSD1306 display object for modules to use.
@@ -44,21 +44,21 @@ Adafruit_SSD1306 SSD1306(128, 64);
 
 /// @brief WiFi network name
 const char *ssid = 
-"bigdaddyroy";
+"bas";
 /// @brief WiFi network password
 const char *passphrase = 
-"54e74ffded91q";
+"12345";
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.121.189:80/bas/getdata.php";
+"http://192.168.31.179:80/bas/getdata.php";
 
 #ifdef USUAL_WORKFLOW
 
 void setup()
 {
     Serial.begin(115200);
-    Serial.print(F("\r\n\nesp.ino:setup"));
+    Serial.print(F("\r\n\nUSUAL_WORKFLOW mode.\r\nesp.ino:setup"));
 
     Serial.print(F("Configured WiFi: ")); Serial.println(ssid);
     Serial.print(F("Configured remote server: ")); Serial.println(send_url);
@@ -169,7 +169,7 @@ void setup()
 {
     Serial.begin(115200);
 
-    Serial.println(F("\r\n\nesp.ino:setup\r\nEMPTY_DATABASE mode."));
+    Serial.println(F("\r\n\nEMPTY_DATABASE mode.\r\nesp.ino:setup"));
 
     R307.begin(57600);
     
@@ -205,7 +205,7 @@ void loop()
 void setup()
 {
     Serial.begin(115200);
-    Serial.println(F("\r\n\nesp.ino:setup\r\nPLAYGROUND mode."));
+    Serial.println(F("\r\n\nPLAYGROUND mode.\r\nesp.ino:setup"));
 }
 
 void loop()
