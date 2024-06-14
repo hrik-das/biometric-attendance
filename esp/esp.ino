@@ -44,14 +44,14 @@ Adafruit_SSD1306 SSD1306(128, 64);
 
 /// @brief WiFi network name
 const char *ssid = 
-"bas";
+"oneplus";
 /// @brief WiFi network password
 const char *passphrase = 
-"12345";
+"m3furyys";
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.31.179:80/bas/getdata.php";
+"http://192.168.31.179:80/PHP/biometric-attendance/server/getdata.php";
 
 #ifdef USUAL_WORKFLOW
 
@@ -202,23 +202,15 @@ void loop()
 
 #ifdef PLAYGROUND
 
-void setup()
-{
-    Serial.begin(115200);
-    Serial.println(F("\r\n\nPLAYGROUND mode.\r\nesp.ino:setup"));
+void setup() {
+    pinMode(LED_BUILTIN, OUTPUT);
 }
 
-void loop()
-{
-    static int a = 0;
-    a++;
+void loop() {
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(1000);
-    if (a < 5) {
-        Serial.println(F("a < 5: returning from loop()"));
-        return;
-    } else {
-        Serial.println(F("a >= 5: not returning from loop()"));
-    }
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(1000);
 }
 
 #endif

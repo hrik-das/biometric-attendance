@@ -3,5 +3,7 @@
     require_once("../include/essential.php");
     adminLogin();
 
-    if(isset($_POST["date"])){}
+    if(isset($_POST["date"])){
+        
+    }
 ?>
