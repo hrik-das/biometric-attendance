@@ -14,7 +14,7 @@ u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.print(__FILE__); Serial.println(F(":delist"));
 
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":deleteModel:loc:")); Serial.print(loc);
 
     switch (R307.deleteModel(loc)) {

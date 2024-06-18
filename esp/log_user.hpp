@@ -23,7 +23,7 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
 {
     Serial.print(__FILE__); Serial.println(F(":check_for_valid_user"));
 
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":getImage:"));
 
     switch (R307->getImage()) {
@@ -48,7 +48,7 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
     }
 
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":image2Tz:"));
 
     switch (R307->image2Tz()) {
@@ -77,15 +77,15 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
     }
 
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":fingerFastSearch:"));
 
     switch (R307->fingerFastSearch()) {
         case FINGERPRINT_OK:
-            Serial.println(F("FINGERPRINT_OK:loc:"));
+            Serial.print(F("FINGERPRINT_OK:loc:"));
             Serial.println(R307->fingerID);
             draw64x64Bitmap(FOUND);
-            return ~FINGERPRINT_OK;
+            return FINGERPRINT_OK;
         case FINGERPRINT_NOTFOUND:
             Serial.println(F("FINGERPRINT_NOTFOUND"));
             draw64x64Bitmap(NOT_FOUND);

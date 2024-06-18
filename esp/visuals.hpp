@@ -15,9 +15,8 @@ void showLocalErrorMsg()
     delay(2000);
 } // void showLocalErrorMsg()
 
-/// @brief Draw a `PROGMEM`-resident 64x64 horizontally centred (at
-/// the position `(32, 0)`) 1-bit image, using the `WHITE` color for
-/// `1` second.
+/// @brief Draw a `PROGMEM`-resident 64x64 horizontally centred (at the position
+/// (32, 0)`) 1-bit image, using the `WHITE` color for `1` second.
 /// @param bitmap Byte array with monochrome bitmap
 void draw64x64Bitmap(const u8 bitmap[])
 {

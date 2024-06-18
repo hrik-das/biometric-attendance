@@ -3,8 +3,9 @@
 
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_Fingerprint.h>
-#include <Ticker.h>
+#include <atomic>
 
+#include "Ticker.h"
 #include "visuals.hpp"
 #include "bitmap.h"
 
@@ -22,17 +23,30 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
     Serial.print(__FILE__); Serial.print(F(":process_image:slot:")); Serial.println(slot);
 
     u8 temp = ~FINGERPRINT_OK;
-    u8 time_left = 6;
-    Ticker timer;
+    
+    std::atomic<bool> timeout;
+    timeout.store(false);
+    
+    uint_least32_t interval_ms = 6000;
 
-    timer.attach_ms(1000, [&time_left] { --time_left; });
+    // Run lambda after 6000ms, stopping ticker at lambda exit
+    Ticker ticker (
+        [&timeout, &ticker] {
+            timeout.store(true);
+            ticker.stop();
+        },
+        interval_ms);
+
+    ticker.start();
 
     draw64x64Bitmap(SCANNING);
 
     while (temp) { /* != FINGERPRINT_OK */
-        if (!time_left) {
-            Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ - 1);
-            Serial.print(F(":TIMEOUT:User took too long to enroll"));
+        ticker.update();
+
+        if (timeout.load()) {
+            Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ - 1);
+            Serial.println(F(":TIMEOUT"));
             SSD1306.clearDisplay();
             SSD1306.setCursor(22, 16); SSD1306.print(F("TIMEOUT!"));
             SSD1306.display();
@@ -40,7 +54,7 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
             return FINGERPRINT_TIMEOUT;
         }
 
-        Serial.print(__FILE__ + ':' + __LINE__ + 3);
+        Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
         Serial.print(F(":getImage:slot:")); Serial.print(slot);
 
         temp = R307.getImage();
@@ -69,9 +83,7 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
         }
     } // while (temp != FINGERPRINT_OK)
 
-    timer.detach();
-
-    Serial.print(__FILE__ + ':' + __LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":image2Tz:slot:")); Serial.print(slot);
 
     switch (R307.image2Tz(slot)) {
@@ -130,7 +142,7 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
     if (process_image(2, R307) /* != FINGERPRINT_OK */ )
         return ~FINGERPRINT_OK;
 
-    Serial.print(__FILE__ + ':' + __LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":createModel:"));
 
     switch (R307.createModel()) {
@@ -151,7 +163,7 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
             return ~FINGERPRINT_OK;
     }
     
-    Serial.print(__FILE__ + ':' + __LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":storeModel:loc:")); Serial.print(loc);
 
     switch (R307.storeModel(loc)) {

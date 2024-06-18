@@ -51,14 +51,14 @@ const char *passphrase =
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.31.179:80/PHP/biometric-attendance/server/getdata.php";
+"http://192.168.142.176/PHP/biometric-attendance/server/getdata.php";
 
 #ifdef USUAL_WORKFLOW
 
 void setup()
 {
     Serial.begin(115200);
-    Serial.print(F("\r\n\nUSUAL_WORKFLOW mode.\r\nesp.ino:setup"));
+    Serial.println(F("\r\n\nUSUAL_WORKFLOW mode.\r\nesp.ino:setup"));
 
     Serial.print(F("Configured WiFi: ")); Serial.println(ssid);
     Serial.print(F("Configured remote server: ")); Serial.println(send_url);
@@ -88,19 +88,19 @@ void setup()
     // A good way to check if the sensor is active and responding
     if (!R307.verifyPassword()) {
         // Sensor is not active or repsonding
-        Serial.println(F("Did not find fingerprint sensor"));
+        Serial.println(F("Did not find Fingerprint Sensor."));
         showLocalErrorMsg();
         while (true) delay(ULONG_LONG_MAX);
     }
 
     // Sensor is active and responding
-    Serial.println(F("Found fingerprint sensor!"));
+    Serial.println(F("Found Fingerprint Sensor."));
     SSD1306.clearDisplay();
     SSD1306.setCursor(28, 10); SSD1306.print(F("SENSOR"));
     SSD1306.setCursor(34, 38); SSD1306.print(F("FOUND"));
     SSD1306.display();
     
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 3);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":getTemplateCount:"));
 
     switch (R307.getTemplateCount()) {
@@ -118,7 +118,7 @@ void setup()
             while (true) delay(ULONG_LONG_MAX);
     }
 
-    Serial.print(__FILE__); Serial.print(':'); Serial.print(__LINE__ + 1);
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 1);
     Serial.println(":templateCount:"); Serial.println(R307.templateCount);
     
     delay(1000);
@@ -138,8 +138,6 @@ void loop()
         // matched with the template library (or the fingerprint
         // sensor database)
         log_user(R307);
-
-    delay(50);
 
     // ==============================================================
     // SPECIAL OPERATIONS - ENLIST / DELIST / UPDATE
@@ -177,11 +175,13 @@ void setup()
     // A good way to check if the sensor is active and responding
     if (!R307.verifyPassword()) {
         // Sensor is not active or repsonding
-        Serial.println(F("Did not find fingerprint sensor"));
-        return;
+        Serial.println(F("Did not find Fingerprint Sensor."));
+        showLocalErrorMsg();
+        while (true) delay(ULONG_LONG_MAX);
     }
 
-    Serial.println(F("Found fingerprint sensor!"));
+    // Sensor is active and responding
+    Serial.println(F("Found Fingerprint Sensor."));
     
     Serial.print(F("getTemplateCount:")); Serial.println(R307.getTemplateCount());
     Serial.print(F("templateCount:")); Serial.println(R307.templateCount);
