@@ -202,6 +202,36 @@ function selectRegStatus(regStatus){
     xhr.send("dropdown-reg-status="+regStatus);
 }
 
+document.getElementById("update-finger").addEventListener("click", updateFingerprint);
+
+function updateFingerprint(){
+    let rollNumber = document.getElementsByName("roll")[1].value;
+    if(confirm(`Are You Sure, You want to update Fingerprint for Rollnumber - ${rollNumber}?`)){
+        let data = new FormData();
+        data.append("roll", rollNumber);
+        data.append("update-fingerprint", "");
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "./ajax/students.php", true);
+        xhr.onload = function(){
+            if(xhr.status >= 200 && xhr.status < 300){
+                if(this.responseText == 1){
+                    alert("success", "Student Fingerprint Updated Successfully.");
+                    // editStudentForm.reset();
+                    // getStudents();
+                }else{
+                    alert("error", "Fingerprint Updation Failed!");
+                }
+            }else{
+                console.error("Request failed with status : ", xhr.status);
+            }
+        }
+        xhr.onerror = function(){
+            console.error("Network error occurred!");
+        }
+        xhr.send(data);
+    }
+}
+
 window.onload = function(){
     getStudents();
 }

@@ -41,17 +41,19 @@ if (isset($_POST["log-user-at"])) {
     exit(0);
 }
 
-$esp_edu_state_rs = mysqli_query($connect, "SELECT * FROM `esp_edu_state`");
+
+$esp_edu_state_rs = mysqli_query($connect, "SELECT * FROM `esp_edu_state` WHERE `success` IS NULL");
 
 if (mysqli_num_rows($esp_edu_state_rs) != 1)
     exit(1);
+
+$esp_edu_state_row = mysqli_fetch_assoc($esp_edu_state_rs);
 
 // Server sends (E|D|U){fingerprint_id}R{roll_no} of student.
 // This `if` branch is connected with the next `else` branch where ESP
 // sends confirmation regarding whether the enlisting, delisting, or update
 // operation took place sucessfully.
 if (isset($_POST["check-edu"])) {
-    $esp_edu_state_row = mysqli_fetch_assoc($esp_edu_state_rs);
     $payload .=
         $esp_edu_state_row["mode"] . $esp_edu_state_row["fingerprint_id"]
         . "R" . $esp_edu_state_row["roll_no"];
@@ -63,20 +65,35 @@ if (isset($_POST["check-edu"])) {
 else switch ($_POST["confirm-edu"]) {
     // Successful Enlist / Delist / Update
     case 'ok':
-        mysqli_commit($connect);
         // Set success flag to true
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `success` = 1");
-        // Finally let `ajax/edu.php` control pass through
+        // Finally let `ajax/students.php` control pass through
         // `while(...) sleep(1);` part
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
         exit(0);
 
     // Unsuccessful Enlist / Delist / Update
     case 'err':
-        mysqli_rollback($connect);
+        // revert changes made to `users_all` in case of failure at esp side.
+        switch ($esp_edu_state_row["mode"]) {
+            // failure during enlist
+            case 'E':
+                // revert "INSERT INTO users_all"
+                $query = "DELETE FROM `users_all` WHERE `roll_no` = ?";
+                $result = execCRUD($query, "i", $esp_edu_state_row["roll_no"]);
+                break;
+                
+            // failure during delist
+            case 'D':
+                // revert "SET `delist_date` = curdate()"
+                $query = "UPDATE `users_all` SET `delist_date` = NULL WHERE `roll_no`=?";
+                $result = execCRUD($query, "i", $esp_edu_state_row["roll_no"]);
+                break;
+        }
+        
         // Set success flag to false
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `success` = 0");
-        // Finally let `ajax/edu.php` control pass through
+        // Finally let `ajax/students.php` control pass through
         // `while(...) sleep(1);` part
         mysqli_query($connect, "UPDATE `esp_edu_state` SET `server_block` = 0");
         exit(0);

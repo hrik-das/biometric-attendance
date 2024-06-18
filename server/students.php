@@ -1,4 +1,5 @@
 <?php
+    opcache_compile_file("students.php");
     require_once("./include/essential.php");
     adminLogin();
 ?>
@@ -126,7 +127,7 @@
             <form action="" id="edit-student-form">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title"><i class="bi bi-person-lines-fill"></i> Add Student Details</h5>
+                        <h5 class="modal-title"><i class="bi bi-person-lines-fill"></i> Update Student Details</h5>
                     </div>
                     <div class="modal-body">
                         <marquee direction="left" class="badge bg-light text-dark mb-3 text-wrap lh-base rounded-pill">
@@ -161,6 +162,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-dark text-white shadow-none me-auto" id="update-finger">Update Fingerprint</button>
                         <button type="reset" class="btn btn-sm btn-outline-dark shadow-none" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-sm btn-dark text-white shadow-none">Update Student</button>
                     </div>
