@@ -36,15 +36,15 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_IMAGEFAIL:
             Serial.println(F("FINGERPRINT_IMAGEFAIL"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 
@@ -61,19 +61,19 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FEATUREFAIL:
             Serial.println(F("FINGERPRINT_FEATUREFAIL"));
-            showLocalErrorMsg();
+            SSD1306FeatureFailMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_INVALIDIMAGE:
             Serial.println(F("FINGERPRINT_INVALIDIMAGE"));
-            showLocalErrorMsg();
+            SSD1306InvalidImageMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 
@@ -92,11 +92,11 @@ u8 check_for_valid_user(Adafruit_Fingerprint *R307)
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 } // u8 check_for_valid_user(Adafruit_Fingerprint *R307)
@@ -120,24 +120,23 @@ void log_user(const Adafruit_Fingerprint &R307)
 
     Serial.print(F("Logging user at loc: ")); Serial.println(R307.fingerID);
 
-    SSD1306.clearDisplay();
 
     if (payload.isEmpty()) {
-        SSD1306.setCursor(28, 10); SSD1306.print(F("REMOTE"));
-        SSD1306.setCursor(34, 38); SSD1306.print(F("ERROR"));
+        SSD1306RemoteErrorMsg();
         Serial.println(F("Response payload empty: REMOTE ERROR"));
     } else {
         roll = payload.substring(payload.indexOf('R') + 1);
 
+        SSD1306.clearDisplay();
         SSD1306.setCursor(22, 6); SSD1306.print(F("WELCOME"));
         SSD1306.setTextSize(3);
         SSD1306.setCursor((128 - 18 * (roll.length() + 1)) >> 1, 38);
         SSD1306.print(F("#")); SSD1306.print(roll);
         SSD1306.setTextSize(2);
+        SSD1306.display();
+        delay(1000);
     }
 
-    SSD1306.display();
-    delay(1000);
 } // void log_user(const Adafruit_Fingerprint &sensor)
 
 #endif // _LOG_USER_HPP

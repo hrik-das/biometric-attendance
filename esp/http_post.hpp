@@ -3,8 +3,10 @@
 
 #include <WiFiClient.h>
 #include <ESP8266HTTPClient.h>
+#include <Adafruit_SSD1306.h>
 
 extern const String send_url;
+extern Adafruit_SSD1306 SSD1306;
 
 /// @brief In-house utility (boilerplate reduction) for sending a POST
 /// request with the supplied data to the configured remote server. Prints
@@ -29,6 +31,14 @@ String httpPOST(const String postData)
 
     Serial.print(F("HTTP response status code: ")); Serial.println(httpCode);
     Serial.print(F("Response payload: ")); Serial.println(payload);
+
+    if (httpCode != 200) {
+        SSD1306.clearDisplay();
+        SSD1306.setCursor(28, 10); SSD1306.print(F("REMOTE"));
+        SSD1306.setCursor(34, 38); SSD1306.print(F("ERROR"));
+        SSD1306.display();
+        delay(1000);
+    }
 
     return payload;
 } // String httpPOST(const String postData)

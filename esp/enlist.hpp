@@ -31,10 +31,7 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
 
     // Run lambda after 6000ms, stopping ticker at lambda exit
     Ticker ticker (
-        [&timeout, &ticker] {
-            timeout.store(true);
-            ticker.stop();
-        },
+        [&timeout, &ticker] { timeout.store(true); ticker.stop(); },
         interval_ms);
 
     ticker.start();
@@ -70,15 +67,15 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
                 break;
             case FINGERPRINT_PACKETRECIEVEERR:
                 Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
-                showLocalErrorMsg();
+                SSD1306LocalErrorMsg();
                 break;
             case FINGERPRINT_IMAGEFAIL:
                 Serial.println(F(":FINGERPRINT_IMAGEFAIL"));
-                showLocalErrorMsg();
+                SSD1306LocalErrorMsg();
                 break;
             default:
                 Serial.println(F(":<--UNDOCUMENTED-->"));
-                showLocalErrorMsg();
+                SSD1306LocalErrorMsg();
                 break;
         }
     } // while (temp != FINGERPRINT_OK)
@@ -95,19 +92,19 @@ u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FEATUREFAIL:
             Serial.println(F(":FINGERPRINT_FEATUREFAIL"));
-            showLocalErrorMsg();
+            SSD1306FeatureFailMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_INVALIDIMAGE:
             Serial.println(F(":FINGERPRINT_INVALIDIMAGE"));
-            showLocalErrorMsg();
+            SSD1306InvalidImageMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F(":<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 } // u8 process_image(const u8 slot, Adafruit_Fingerprint &R307)
@@ -130,8 +127,8 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
     SSD1306.setCursor(28, 38); SSD1306.print(F("FINGER"));
     SSD1306.display();
     Serial.println("REMOVE FINGER");
-    // display "REMOVE FINGER" message for 2 seconds
-    delay(2000);
+    // // display "REMOVE FINGER" message for 2 seconds
+    // delay(2000);
     
     // Ensure that finger is taken off the sensor before taking temp for SLOT 2
     while (R307.getImage() != FINGERPRINT_NOFINGER);
@@ -151,15 +148,15 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
             break;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_ENROLLMISMATCH:
             Serial.println(F("FINGERPRINT_ENROLLMISMATCH"));
-            showLocalErrorMsg();
+            SSD1306MismatchMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
     
@@ -173,19 +170,19 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
             return FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
             Serial.println(F(":FINGERPRINT_BADLOCATION"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FLASHERR:
             Serial.println(F(":FINGERPRINT_FLASHERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F(":<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 } // u8 enlist(const u16 loc, Adafruit_Fingerprint &sensor)

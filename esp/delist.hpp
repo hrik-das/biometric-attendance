@@ -10,7 +10,7 @@
 /// @param R307 `[IN]` Object denoting the R307 fingerprint sensor.
 /// @return `FINGERPRINT_OK` if user was sucessfully deleted. Not `FINGERPRINT_OK`
 /// otherwise.
-u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
+u8  delist(const u16 loc, Adafruit_Fingerprint &R307)
 {
     Serial.print(__FILE__); Serial.println(F(":delist"));
 
@@ -23,19 +23,19 @@ u8 delist(const u16 loc, Adafruit_Fingerprint &R307)
             return FINGERPRINT_OK;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F(":FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_BADLOCATION:
             Serial.println(F(":FINGERPRINT_BADLOCATION"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         case FINGERPRINT_FLASHERR:
             Serial.println(F(":FINGERPRINT_FLASHERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
         default:
             Serial.println(F(":<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             return ~FINGERPRINT_OK;
     }
 } // u8 delist(const u16 loc, Adafruit_Fingerprint &R307)

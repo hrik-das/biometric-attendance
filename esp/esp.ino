@@ -3,6 +3,8 @@
 #include <Adafruit_Fingerprint.h>
 #include <pins_arduino.h>
 
+/// ==============================================================
+
 #include "connection.hpp"
 #include "log_user.hpp"
 #include "enlist.hpp"
@@ -11,6 +13,23 @@
 #include "remote.hpp"
 #include "visuals.hpp"
 #include "bitmap.h"
+
+/// ==============================================================
+
+/// @brief WiFi network name
+const char *ssid = 
+"oneplus";
+/// @brief WiFi network password
+const char *passphrase = 
+"m3furyys";
+
+/// ==============================================================
+
+/// @brief Fully qualified resource path of remote server
+const String send_url = 
+"http://192.168.145.176/PHP/biometric-attendance/server/getdata.php";
+
+/// ==============================================================
 
 /// @brief ONLY ONE of the following three is to be defined
 
@@ -21,13 +40,24 @@
 /// @brief For trying out misc stuff
 // #define PLAYGROUND 1
 
+/// ==============================================================
+
 #define R307_RX D3
 #define R307_TX D4
 
+/// ==============================================================
+
 /// @brief `SoftwareSerial` object to instantiate sensor with.
 SoftwareSerial ss = SoftwareSerial(R307_RX, R307_TX);
-/// @brief Denotes the R307 Fingerprint Sensor module of the project.
+/// @brief Denotes the R307 R307 module of the project.
 Adafruit_Fingerprint R307 = Adafruit_Fingerprint(&ss);
+
+/// ==============================================================
+
+/// @brief Global OLED SSD1306 display object for modules to use.
+Adafruit_SSD1306 SSD1306(128, 64);
+
+/// ==============================================================
 
 /// @brief Utility object for holding Template Library location
 /// of a user fingerprint to add, update or delete.
@@ -38,20 +68,11 @@ Operation op;
 /// @brief Utility object for holding the roll no. of a student
 /// whenever needed.
 String roll;
+/// @brief The last available PageID of the sensor. Refer to hardware
+/// brfore setting.
+uint16_t lastPageID = 999;
 
-/// @brief Global OLED SSD1306 display object for modules to use.
-Adafruit_SSD1306 SSD1306(128, 64);
-
-/// @brief WiFi network name
-const char *ssid = 
-"oneplus";
-/// @brief WiFi network password
-const char *passphrase = 
-"m3furyys";
-
-/// @brief Fully qualified resource path of remote server
-const String send_url = 
-"http://192.168.142.176/PHP/biometric-attendance/server/getdata.php";
+/// ==============================================================
 
 #ifdef USUAL_WORKFLOW
 
@@ -84,21 +105,23 @@ void setup()
 
     R307.begin(57600);
     
-    Serial.println(F("Fingerprint Sensor detection test."));
+    Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
+    Serial.print(F(":verifyPassword:"));
     // A good way to check if the sensor is active and responding
     if (!R307.verifyPassword()) {
         // Sensor is not active or repsonding
-        Serial.println(F("Did not find Fingerprint Sensor."));
-        showLocalErrorMsg();
+        Serial.println(F("FALSE"));
+        SSD1306LocalErrorMsg();
         while (true) delay(ULONG_LONG_MAX);
     }
 
     // Sensor is active and responding
-    Serial.println(F("Found Fingerprint Sensor."));
+    Serial.println(F("TRUE"));
     SSD1306.clearDisplay();
     SSD1306.setCursor(28, 10); SSD1306.print(F("SENSOR"));
     SSD1306.setCursor(34, 38); SSD1306.print(F("FOUND"));
     SSD1306.display();
+    delay(1000);
     
     Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 3);
     Serial.print(F(":getTemplateCount:"));
@@ -110,11 +133,11 @@ void setup()
             break;
         case FINGERPRINT_PACKETRECIEVEERR:
             Serial.println(F("FINGERPRINT_PACKETRECIEVEERR"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             while (true) delay(ULONG_LONG_MAX);
         default:
             Serial.println(F("<--UNDOCUMENTED-->"));
-            showLocalErrorMsg();
+            SSD1306LocalErrorMsg();
             while (true) delay(ULONG_LONG_MAX);
     }
 
@@ -161,6 +184,8 @@ void loop()
 
 #endif
 
+/// ==============================================================
+
 #ifdef EMPTY_DATABASE
 
 void setup()
@@ -171,17 +196,17 @@ void setup()
 
     R307.begin(57600);
     
-    Serial.println(F("Fingerprint Sensor detection test."));
+    Serial.println(F("R307 detection test."));
     // A good way to check if the sensor is active and responding
     if (!R307.verifyPassword()) {
         // Sensor is not active or repsonding
-        Serial.println(F("Did not find Fingerprint Sensor."));
-        showLocalErrorMsg();
+        Serial.println(F("Did not find R307."));
+        SSD1306LocalErrorMsg();
         while (true) delay(ULONG_LONG_MAX);
     }
 
     // Sensor is active and responding
-    Serial.println(F("Found Fingerprint Sensor."));
+    Serial.println(F("Found R307."));
     
     Serial.print(F("getTemplateCount:")); Serial.println(R307.getTemplateCount());
     Serial.print(F("templateCount:")); Serial.println(R307.templateCount);
@@ -199,6 +224,8 @@ void loop()
 }
 
 #endif
+
+/// ==============================================================
 
 #ifdef PLAYGROUND
 

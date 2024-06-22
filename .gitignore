@@ -1,4 +1,4 @@
 .vscode
 build
-mcu/.vscode
-bas.code-workspace
+esp/.vscode
+server/include/sendgrid
