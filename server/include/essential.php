@@ -1,6 +1,6 @@
 <?php
     // SENDGRID API KEY
-    define("SENDGRID_API_KEY", "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");
+    define("SENDGRID_API_KEY", "Your Api Key");
     define("SENDGRID_NAME", "Karimganj College Attendance System");
     define("SENDGRID_EMAIL", "hrikdas012@gmail.com");
 
