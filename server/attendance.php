@@ -26,7 +26,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="d-flex">
                                 <div class="me-3">
-                                    <input type="date" class="form-select-sm p-1" name="date" id="date" onchange="filterDate(this.value)">
+                                    <input type="date" class="form-select-sm p-1" max="<?php echo date("Y-m-d"); ?>" name="date" id="date" onchange="selectDate(this.value)">
                                 </div>
                                 <select class="form-select-sm p-1" onchange="selectSemester(this.value)" id="semester">
                                     <option value="all" selected>Semester</option>

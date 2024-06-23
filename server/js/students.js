@@ -37,6 +37,9 @@ function addStudent(){
                 alert("success", "New Student Added Successfully.");
                 addStudentForm.reset();
                 getStudents();
+            }else if (this.responseText == 2) {
+                alert("error", "Student already enlisted.");
+                addStudentForm.reset();
             }else{
                 alert("error", "Operation Failed!");
             }

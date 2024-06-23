@@ -27,7 +27,7 @@ const char *passphrase =
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.145.176/PHP/biometric-attendance/server/getdata.php";
+"http://192.168.119.176/PHP/biometric-attendance/server/getdata.php";
 
 /// ==============================================================
 
@@ -142,7 +142,7 @@ void setup()
     }
 
     Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ + 1);
-    Serial.println(":templateCount:"); Serial.println(R307.templateCount);
+    Serial.print(":templateCount:"); Serial.println(R307.templateCount);
     
     delay(1000);
 }

@@ -122,18 +122,22 @@ u8 enlist(const u16 loc, Adafruit_Fingerprint &R307)
     if (process_image(1, R307) /* != FINGERPRINT_OK */ )
         return ~FINGERPRINT_OK;
 
-    SSD1306.clearDisplay();
-    SSD1306.setCursor(28, 10); SSD1306.print(F("REMOVE"));
-    SSD1306.setCursor(28, 38); SSD1306.print(F("FINGER"));
-    SSD1306.display();
-    Serial.println("REMOVE FINGER");
-    // // display "REMOVE FINGER" message for 2 seconds
-    // delay(2000);
+    if (!R307.getImage()) {
+        SSD1306.clearDisplay();
+        SSD1306.setCursor(28, 10); SSD1306.print(F("REMOVE"));
+        SSD1306.setCursor(28, 38); SSD1306.print(F("FINGER"));
+        SSD1306.display();
+        Serial.print(__FILE__); Serial.print(F(":")); Serial.print(__LINE__ - 5);
+        Serial.println(F(":getImage:0:FINGERPRINT_OK"));
+        Serial.println("REMOVE FINGER");
+        // display "REMOVE FINGER" message if finger is still pressed
+    }    
     
     // Ensure that finger is taken off the sensor before taking temp for SLOT 2
     while (R307.getImage() != FINGERPRINT_NOFINGER);
     // finger removed, erase "REMOVE FINGER" message
     SSD1306.clearDisplay();
+    SSD1306.display();
 
     // SLOT 2
     if (process_image(2, R307) /* != FINGERPRINT_OK */ )

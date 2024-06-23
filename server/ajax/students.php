@@ -2,7 +2,10 @@
 opcache_compile_file("students.php");
 require_once("../include/connect.php");
 require_once("../include/essential.php");
+require("../include/sendgrid/sendgrid-php.php");
+date_default_timezone_set("Asia/Kolkata");
 adminLogin();
+
 
 // TO SHOW ALL ENLISTED STUDENT DATA ON THE TABLE ON LOAD
 if (isset($_POST["get-all-enlisted"])) {
@@ -19,20 +22,20 @@ if (isset($_POST["get-all-enlisted"])) {
     while ($row = mysqli_fetch_assoc($result)) {    // Iterate through the query results and format data into HTML table rows
         // Concatenate HTML table row for each student
         $data .= "
-                <tr class='align-middle'>
-                    <td>$i</td>
-                    <td>{$row['roll_no']}</td>
-                    <td>{$row['full_name']}</td>
-                    <td>{$row['email']}</td>
-                    <td>{$row['contact']}</td>
-                    <td>{$row['semester']}</td>
-                    <td>{$row['enlist_date']}</td>
-                    <td>NIL</td>
-                    <td>
-                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
-                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
-                    </td>
-                </tr>";
+        <tr class='align-middle'>
+        <td>$i</td>
+        <td>{$row['roll_no']}</td>
+        <td>{$row['full_name']}</td>
+        <td>{$row['email']}</td>
+        <td>{$row['contact']}</td>
+        <td>{$row['semester']}</td>
+        <td>{$row['enlist_date']}</td>
+        <td>NIL</td>
+        <td>
+        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+        </td>
+        </tr>";
         $i++;    // Increasing by 1 for New Rows
     }
     echo $data;    // Echo the concatenated HTML table rows representing student information
@@ -60,19 +63,19 @@ else if (isset($_POST["get-student"])) {
     while ($row = mysqli_fetch_assoc($result)) {
         $data .= "
                 <tr class='align-middle'>
-                    <td>$i</td>
-                    <td>{$row['roll_no']}</td>
-                    <td>{$row['full_name']}</td>
-                    <td>{$row['email']}</td>
+                <td>$i</td>
+                <td>{$row['roll_no']}</td>
+                <td>{$row['full_name']}</td>
+                <td>{$row['email']}</td>
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
                     <td>
-                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
-                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                    <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                    <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
                     </td>
                 </tr>";
-        $i++;
+                $i++;
     }
     echo $data;
     exit(0);
@@ -110,8 +113,8 @@ else if (isset($_POST["get-student"])) {
                     <td>{$row['enlist_date']}</td>
                     <td>{$delist_date}</td>
                     <td>
-                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
-                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                    <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                    <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
                     </td>
                 </tr>";
         $i++;
@@ -120,21 +123,27 @@ else if (isset($_POST["get-student"])) {
     exit(0);
 } else if (isset($_POST["dropdown-reg-status"])) {
     $filterData = filteration($_POST);
-    $i = 1;
-    $data = "";
+    
     $_SESSION["dropdown-reg-status"] = $filterData["dropdown-reg-status"];
+    
     $query = "SELECT * FROM `users_all` WHERE `semester`";
     $query .= match ($_SESSION["dropdown-sem"]) {
         "all" => " LIKE \"_\"",    // match any/all semesters
         default => " = " . $_SESSION["dropdown-sem"],
     };
+    
     $query .= match ($filterData["dropdown-reg-status"]) {
         "enlist" => " AND `delist_date` IS NULL",
         "delist" => " AND `delist_date` IS NOT NULL",
         "all" => "",
     };
+    
     $query .= " ORDER BY `fingerprint_id` DESC";
+    
     $result = mysqli_query($connect, $query);
+    
+    $i = 1;
+    $data = "";
     if (mysqli_num_rows($result) == 0) {
         echo "<b>No Data Found!</b>";
         exit();
@@ -142,7 +151,7 @@ else if (isset($_POST["get-student"])) {
     while ($row = mysqli_fetch_assoc($result)) {
         $delist_date = $row["delist_date"] ?: "NIL";
         $data .= "
-                <tr class='align-middle'>
+        <tr class='align-middle'>
                     <td>$i</td>
                     <td>{$row['roll_no']}</td>
                     <td>{$row['full_name']}</td>
@@ -152,21 +161,61 @@ else if (isset($_POST["get-student"])) {
                     <td>{$row['enlist_date']}</td>
                     <td>{$delist_date}</td>
                     <td>
-                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
-                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                    <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                    <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
                     </td>
-                </tr>";
-        $i++;
-    }
+                    </tr>";
+                    $i++;
+                }
     echo $data;
     exit(0);
 }
 
+// function sendMail($useremail){
+//     $query = "SELECT * FROM `users_all` WHERE `email`=?";
+//     $result = execCRUD($query, "s", $useremail);
+//     $data = mysqli_fetch_assoc($result);
+//     $subject = "Attendance System Ragistration Successful";
+//     $email = new \SendGrid\Mail\Mail();
+//     $email->setFrom(SENDGRID_EMAIL, SENDGRID_NAME);
+//     $email->setSubject($subject);
+//     $email->addTo($useremail);
+//     $email->addContent(
+//         "text/html",
+//         "Dear, \n\t
+//             $data[full_name] Your Biometric Attendance Registration for Karimaganj College is Registered Successfully. Your Details are Mentioned Below - \n
+//             Roll No. - <strong>$data[roll_no]</strong>
+//             Full Name - <strong>$data[full_name]</strong>
+//             email - <strong>$data[email]</strong>
+//             contact - <strong>$data[contact]</strong>
+//             semester - <strong>$data[semester]</strong>
+//             Registration Date - <strong>$data[enlist_date]</strong>\n\n
+            
+//             Note: If any of your details are incorrect than correct with your college administration. Thank You."
+//     );
+//     $sendgrid = new \SendGrid(SENDGRID_API_KEY);
+//     try{
+//         $sendgrid->send($email);
+//         return 1;
+//     }catch(Exception $error){
+//         return 0;
+//     }
+// }
+
 // ==========================================================================================================
-// ENLIST
+// ENLIST //
 // ==========================================================================================================
-if (isset($_POST["add-student"])) {
+//
+ if (isset($_POST["add-student"])) {
     $filterData = filteration($_POST);
+
+    $query = "SELECT * FROM `users_all` WHERE `delist_date` IS NULL AND `roll_no` = " . $filterData["roll"]; 
+    $result = mysqli_query($connect, $query);
+    
+    if (mysqli_num_rows($result)) {
+        echo 2;
+        exit(0);
+    }
     
     // REVERT THIS IN CASE OF FAILURE AT ESP SIDE
     // get `fingerprint_id` of student to be entered
@@ -195,8 +244,52 @@ if (isset($_POST["add-student"])) {
         )["success"];
     
     mysqli_query($connect, "DELETE FROM `esp_edu_state`");
+
+    // if(!(sendMail($filterData["email"]))){
+    //     alert("error", "Mail Failed!");
+    // }
+
+    $emailBody = "Dear, \n\t" .
+            $filterData['name'] . "Your Biometric Attendance Registration for Karimaganj College is Registered Successfully. Your Details are Mentioned Below - \n
+            Roll No. - <strong>" . $filterData['roll'] . "</strong>
+            Full Name - <strong>" . $filterData['name'] . "</strong>
+            email - <strong>" . $filterData['email'] . "</strong>
+            contact - <strong>" . $filterData['phone'] . "</strong>
+            semester - <strong>" . $filterData['sem'] . "</strong>
+            Registration Date - <strong>" . $filterData['date'] . "</strong>\n\n
+            Note: If any of your details are incorrect than correct with your college administration. Thank You.";
+    $subject = "Attendance System Ragistration Successful";
+    $email = new \SendGrid\Mail\Mail();
+    $email->setFrom(SENDGRID_EMAIL, SENDGRID_NAME);
+    $email->setSubject($subject);
+    $email->addTo($filterData["email"]);
+    $email->addContent(
+        "text/html",
+        $emailBody
+    );
+    $sendgrid = new \SendGrid(SENDGRID_API_KEY);
     
-    exit(0);
+    // if ((function($sendgrid, $email) {
+    //     try{
+    //         $sendgrid->send($email);
+    //         return 1;
+    //     }catch(Exception $error){
+    //         return 0;
+    //     }
+    // })($sendgrid, $email) == 1) {
+    //     // success
+    //     alert("success", "Patai disi");
+    // } else {
+    //     // fail
+    //     alert("error", "Partam na");
+    // }
+
+    try{
+        $sendgrid->send($email);
+        // return 1;
+    }catch(Exception $error){
+        // return 0;
+    }
 }
 // ==========================================================================================================
 // DELIST
@@ -209,13 +302,13 @@ if (isset($_POST["remove-student"])) {
     $delist_id_rs = execCRUD($query, "i", $filterData["roll"]);
     $ESP_D_id = mysqli_fetch_assoc($delist_id_rs)["fingerprint_id"];
     
-    $query = "INSERT INTO `esp_edu_state` (`mode`, `fingerprint_id`, `roll_no`, `server_block`) VALUES (?, ?, ?, ?)";
-    $result = execCRUD($query, "siii", "D", $ESP_D_id, $filterData["roll"], 1);
-    
     // REVERT THIS IN CASE OF FAILURE AT ESP SIDE
     // delist student
     $query = "UPDATE `users_all` SET `delist_date`=CURDATE() WHERE `roll_no`=?";
     $result = execCRUD($query, "i", $filterData["roll"]);
+
+    $query = "INSERT INTO `esp_edu_state` (`mode`, `fingerprint_id`, `roll_no`, `server_block`) VALUES (?, ?, ?, ?)";
+    $result = execCRUD($query, "siii", "D", $ESP_D_id, $filterData["roll"], 1);
     
     // fingerprint is being set at ESP-side
     while (mysqli_fetch_assoc(mysqli_query($connect, "SELECT `server_block` FROM `esp_edu_state`"))["server_block"])

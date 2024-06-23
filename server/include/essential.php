@@ -1,4 +1,9 @@
 <?php
+    // SENDGRID API KEY
+    define("SENDGRID_API_KEY", "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");
+    define("SENDGRID_NAME", "Karimganj College Attendance System");
+    define("SENDGRID_EMAIL", "hrikdas012@gmail.com");
+
     /**
     * Displays an alert message with specified type and content using Bootstrap classes.
     * @param string $type The type of alert ("success" for success message, "danger" for error message).
