@@ -235,6 +235,39 @@ function updateFingerprint(){
     }
 }
 
+function toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+    });
+}
+
+document.getElementById("export").addEventListener("click", function() {
+    var status = document.getElementById("export-status").value;
+    // Send AJAX request to the backend
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "./ajax/export_excel.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var myModal = document.getElementById("export-excel");
+            var modal = bootstrap.Modal.getInstance(myModal);
+            modal.hide();
+            // Create a link element to trigger the download
+            var blob = new Blob([xhr.response], { type: "text/csv" });
+            var link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = status + "_student_details.csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert("success", toTitleCase(status) +" Students Details Downloaded Successfully.");
+        } else {
+            alert("Failed to download file. Server responded with status " + xhr.status);
+        }
+    };
+    xhr.send("status=" + encodeURIComponent(status));
+});
+
 window.onload = function(){
     getStudents();
 }

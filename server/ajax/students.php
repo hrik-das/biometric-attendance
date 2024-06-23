@@ -63,16 +63,16 @@ else if (isset($_POST["get-student"])) {
     while ($row = mysqli_fetch_assoc($result)) {
         $data .= "
                 <tr class='align-middle'>
-                <td>$i</td>
-                <td>{$row['roll_no']}</td>
-                <td>{$row['full_name']}</td>
-                <td>{$row['email']}</td>
+                    <td>$i</td>
+                    <td>{$row['roll_no']}</td>
+                    <td>{$row['full_name']}</td>
+                    <td>{$row['email']}</td>
                     <td>{$row['contact']}</td>
                     <td>{$row['semester']}</td>
                     <td>{$row['enlist_date']}</td>
                     <td>
-                    <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
-                    <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
+                        <button type='button' onclick='editStudent({$row['roll_no']})' class='btn btn-dark shadow-none btn-sm me-1' data-bs-toggle='modal' data-bs-target='#edit-student'><i class='bi bi-pencil-square'></i></button>
+                        <button type='button' onclick='removeStudent({$row['roll_no']})' class='btn btn-danger shadow-none btn-sm'><i class='bi bi-trash'></i></button>
                     </td>
                 </tr>";
                 $i++;

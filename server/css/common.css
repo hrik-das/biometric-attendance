@@ -13,6 +13,9 @@
     height: 60px;
     font-weight: 500;
     width: 380px;
+    white-space: nowrap;     /* Prevent text from wrapping */
+    overflow: hidden;        /* Hide overflowed text */
+    text-overflow: ellipsis; /* Show ellipsis for overflowed text */
 }
 ::-webkit-scrollbar{
     width: 5px;

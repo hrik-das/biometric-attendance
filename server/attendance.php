@@ -39,7 +39,8 @@
                                 </select>
                             </div>
                             <div class="d-flex justify-content-end">
-                                <input type="text" class="form-control-sm shadow-none" oninput="searchStudent(this.value)" placeholder="Search Student">
+                            <button type="button" class="btn me-3 btn btn-dark shadow-none btn-sm" data-bs-toggle="modal" data-bs-target="#export-attendance-details"><i class="bi bi-cloud-download-fill"></i></button>
+                                <input type="text" class="form-control-sm shadow-none" oninput="search(this.value)" placeholder="Search Student">
                             </div>
                         </div>
                         <div class="table-responsive-lg" style="height: 350px; overflow-y: scroll;">
@@ -61,6 +62,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Export Excel Sheet Student Details Modal -->
+    <div class="modal fade" id="export-attendance-details" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Export Attendance Details</h1>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-column">
+                        <label for="start-date" class="form-label">Start Date:</label>
+                        <input type="date" class="form-control mb-2 shadow-none" id="start-date" max="<?php echo date("Y-m-d"); ?>">
+                        
+                        <label for="end-date" class="form-label">End Date:</label>
+                        <input type="date" class="form-control shadow-none" id="end-date" max="<?php echo date("Y-m-d"); ?>">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="reset" class="btn btn-sm btn-outline-dark shadow-none" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-dark btn-sm mt-1 me-3" id="export-attendance">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Footer -->
     <?php require_once("./include/footer.php"); ?>

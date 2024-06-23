@@ -55,3 +55,26 @@ if (isset($_POST["get-attendance"])) {
 
     exit(0);
 }
+
+if (isset($_POST["search-student"])) {
+    $filterData = filteration($_POST);
+    $searchTerm = "%{$filterData['value']}%"; // Add wildcards to the search term
+    // Prepare the query
+    $query = "SELECT * FROM `attendance_log` WHERE `full_name` LIKE ? OR `roll_no` LIKE ?";
+    // Execute the query using execCRUD function
+    $result = execCRUD($query, "ss", $searchTerm, $searchTerm);
+    $i = 1;
+    $data = "";
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data .= "
+                <tr class='align-middle'>
+                    <td>$i</td>
+                    <td>{$row['roll_no']}</td>
+                    <td>{$row['full_name']}</td>
+                    <td>{$row['semester']}</td>
+                </tr>";
+                $i++;
+    }
+    echo $data;
+    exit(0);
+}
