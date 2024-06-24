@@ -237,27 +237,8 @@ else if (isset($_POST["get-student"])) {
     $email->setFrom(SENDGRID_EMAIL, SENDGRID_NAME);
     $email->setSubject($subject);
     $email->addTo($filterData["email"]);
-    $email->addContent(
-        "text/html",
-        $emailBody
-    );
+    $email->addContent("text/html", $emailBody);
     $sendgrid = new \SendGrid(SENDGRID_API_KEY);
-
-    // if ((function($sendgrid, $email) {
-    //     try{
-    //         $sendgrid->send($email);
-    //         return 1;
-    //     }catch(Exception $error){
-    //         return 0;
-    //     }
-    // })($sendgrid, $email) == 1) {
-    //     // success
-    //     alert("success", "Patai disi");
-    // } else {
-    //     // fail
-    //     alert("error", "Partam na");
-    // }
-
     try{
         $sendgrid->send($email);
         // return 1;

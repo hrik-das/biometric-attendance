@@ -7,32 +7,27 @@ adminLogin();
 if (isset($_POST["init-session-vars"])) {
     $_SESSION["dropdown-date"] = date("Y-m-d");
     $_SESSION["dropdown-sem"] = "all";
-
     exit(0);
 }
 
 if (isset($_POST["dropdown-date"])) {
     $filterData = filteration($_POST);
     $_SESSION["dropdown-date"] = $filterData["dropdown-date"];
-
     exit(0);
 }
 
 if (isset($_POST["dropdown-sem"])) {
     $filterData = filteration($_POST);
     $_SESSION["dropdown-sem"] = $filterData["dropdown-sem"];
-
     exit(0);
 }
 
 if (isset($_POST["get-attendance"])) {
     $query = "SELECT * FROM `attendance_log` WHERE `date`= \"" . $_SESSION["dropdown-date"] . "\"";
-
     $query .= match ($_SESSION["dropdown-sem"]) {
         "all" => "",
         default => " AND `semester` = " . $_SESSION["dropdown-sem"],
     };
-
     $result = mysqli_query($connect, $query);
     $i = 1;
     $data = "";
@@ -50,9 +45,7 @@ if (isset($_POST["get-attendance"])) {
                 </tr>";
         $i++;
     }
-
     echo $data;
-
     exit(0);
 }
 
