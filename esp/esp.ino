@@ -27,7 +27,7 @@ const char *passphrase =
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.119.176/PHP/biometric-attendance/server/getdata.php";
+"http://192.168.145.176/PHP/biometric-attendance/server/getdata.php";
 
 /// ==============================================================
 

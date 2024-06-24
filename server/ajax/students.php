@@ -171,37 +171,6 @@ else if (isset($_POST["get-student"])) {
     exit(0);
 }
 
-// function sendMail($useremail){
-//     $query = "SELECT * FROM `users_all` WHERE `email`=?";
-//     $result = execCRUD($query, "s", $useremail);
-//     $data = mysqli_fetch_assoc($result);
-//     $subject = "Attendance System Ragistration Successful";
-//     $email = new \SendGrid\Mail\Mail();
-//     $email->setFrom(SENDGRID_EMAIL, SENDGRID_NAME);
-//     $email->setSubject($subject);
-//     $email->addTo($useremail);
-//     $email->addContent(
-//         "text/html",
-//         "Dear, \n\t
-//             $data[full_name] Your Biometric Attendance Registration for Karimaganj College is Registered Successfully. Your Details are Mentioned Below - \n
-//             Roll No. - <strong>$data[roll_no]</strong>
-//             Full Name - <strong>$data[full_name]</strong>
-//             email - <strong>$data[email]</strong>
-//             contact - <strong>$data[contact]</strong>
-//             semester - <strong>$data[semester]</strong>
-//             Registration Date - <strong>$data[enlist_date]</strong>\n\n
-            
-//             Note: If any of your details are incorrect than correct with your college administration. Thank You."
-//     );
-//     $sendgrid = new \SendGrid(SENDGRID_API_KEY);
-//     try{
-//         $sendgrid->send($email);
-//         return 1;
-//     }catch(Exception $error){
-//         return 0;
-//     }
-// }
-
 // ==========================================================================================================
 // ENLIST //
 // ==========================================================================================================
@@ -239,9 +208,11 @@ else if (isset($_POST["get-student"])) {
         sleep(1);
     // while(){} exits when ESP sends cofirmation response finally sent to ajax call fom frontend
     
-    echo mysqli_fetch_assoc(
+    $success = mysqli_fetch_assoc(
         mysqli_query($connect, "SELECT `success` FROM `esp_edu_state`")
         )["success"];
+
+    echo $success;
     
     mysqli_query($connect, "DELETE FROM `esp_edu_state`");
 
@@ -249,16 +220,19 @@ else if (isset($_POST["get-student"])) {
     //     alert("error", "Mail Failed!");
     // }
 
-    $emailBody = "Dear, \n\t" .
-            $filterData['name'] . "Your Biometric Attendance Registration for Karimaganj College is Registered Successfully. Your Details are Mentioned Below - \n
-            Roll No. - <strong>" . $filterData['roll'] . "</strong>
-            Full Name - <strong>" . $filterData['name'] . "</strong>
-            email - <strong>" . $filterData['email'] . "</strong>
-            contact - <strong>" . $filterData['phone'] . "</strong>
-            semester - <strong>" . $filterData['sem'] . "</strong>
-            Registration Date - <strong>" . $filterData['date'] . "</strong>\n\n
-            Note: If any of your details are incorrect than correct with your college administration. Thank You.";
-    $subject = "Attendance System Ragistration Successful";
+    if (!$success)
+        exit(1);
+
+    $emailBody = "Dear, " .
+    $filterData['name'] . ",<br>Your Biometric Attendance Registration for Karimaganj College is Registered Successfully. Your Details are Mentioned Below - <br>
+    Roll No. - <strong>" . $filterData['roll'] . "</strong><br>
+    Full Name - <strong>" . $filterData['name'] . "</strong><br>
+    Email - <strong>" . $filterData['email'] . "</strong><br>
+    Contact - <strong>" . $filterData['phone'] . "</strong><br>
+    Semester - <strong>" . $filterData['sem'] . "</strong><br>
+    Registration Date - <strong>" . $filterData['date'] . "</strong><br><br>
+    Note: If any of your details are incorrect than contact with your college administration. Thank You.";
+    $subject = "Attendance System Registration Successful";
     $email = new \SendGrid\Mail\Mail();
     $email->setFrom(SENDGRID_EMAIL, SENDGRID_NAME);
     $email->setSubject($subject);
@@ -268,7 +242,7 @@ else if (isset($_POST["get-student"])) {
         $emailBody
     );
     $sendgrid = new \SendGrid(SENDGRID_API_KEY);
-    
+
     // if ((function($sendgrid, $email) {
     //     try{
     //         $sendgrid->send($email);

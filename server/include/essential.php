@@ -1,6 +1,6 @@
 <?php
     // SENDGRID API KEY
-    define("SENDGRID_API_KEY", "Your Api Key");
+    define("SENDGRID_API_KEY", "YOUR SENDGRID API KEY");
     define("SENDGRID_NAME", "Karimganj College Attendance System");
     define("SENDGRID_EMAIL", "hrikdas012@gmail.com");
 
@@ -15,7 +15,7 @@
         // Output the HTML code for the alert message
         echo<<<alert
             <div class="alert $bs_class alert-dismissible fade show custom-alert" role="alert">
-                <p>$message</p>
+                <p class="m-0" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">$message</p>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         alert;

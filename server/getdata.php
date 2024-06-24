@@ -20,8 +20,8 @@ if (!mysqli_num_rows(mysqli_query($connect, "SELECT `date` FROM `analytics` WHER
     $query = "INSERT INTO `analytics` (`date`, `present`, `absent`, `dar`, `mar`)
                 SELECT CURDATE(), 0, $total, FORMAT(0, 2), FORMAT(0, 2)
                 WHERE CURDATE() NOT IN(SELECT `holiday_date` FROM `holidays_2024`)
-                ";
-                // AND (DAYOFWEEK(CURDATE())) != 1"; // SUNDAYS.
+                AND (DAYOFWEEK(CURDATE())) != 1"; // SUNDAYS.
+                // ";
                 // =================================
                 // ^^^^ CHANGE THIS BEFORE PROD ^^^^
                 // =================================

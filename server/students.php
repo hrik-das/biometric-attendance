@@ -165,7 +165,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-dark text-white shadow-none me-auto" id="update-finger">Update Fingerprint</button>
                         <button type="reset" class="btn btn-sm btn-outline-dark shadow-none" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-sm btn-dark text-white shadow-none">Update Student</button>
+                        <button type="submit" class="btn btn-sm btn-dark text-white shadow-none">Update Details</button>
                     </div>
                 </div>
             </form>
