@@ -1,9 +1,9 @@
 <?php
-opcache_compile_file("dashboard.php");
-opcache_compile_file("getdata.php");
-require_once("include/essential.php");
-require_once("include/connect.php");
-adminLogin();
+    opcache_compile_file("dashboard.php");
+    opcache_compile_file("getdata.php");
+    require_once("include/essential.php");
+    require_once("include/connect.php");
+    adminLogin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,8 +29,8 @@ adminLogin();
                         <h3 class="fw-500 text-success fs-4">Total Students</h3>
                         <p class="text-success fw-bold" id="total">
                             <?php
-                            $query = "SELECT COUNT(*) FROM `users_all` WHERE `delist_date` IS NULL";
-                            echo mysqli_fetch_assoc(mysqli_query($connect, $query))['COUNT(*)'];
+                                $query = "SELECT COUNT(*) FROM `users_all` WHERE `delist_date` IS NULL";
+                                echo mysqli_fetch_assoc(mysqli_query($connect, $query))['COUNT(*)'];
                             ?>
                         </p>
                     </div>

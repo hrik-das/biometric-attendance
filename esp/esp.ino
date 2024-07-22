@@ -18,16 +18,16 @@
 
 /// @brief WiFi network name
 const char *ssid = 
-"oneplus";
+"WIFI NAME";
 /// @brief WiFi network password
 const char *passphrase = 
-"m3furyys";
+"WIFI PASSWORD";
 
 /// ==============================================================
 
 /// @brief Fully qualified resource path of remote server
 const String send_url = 
-"http://192.168.145.176/PHP/biometric-attendance/server/getdata.php";
+"http://YOUR IP ADDRESS/biometric-attendance/server/getdata.php";
 
 /// ==============================================================
 

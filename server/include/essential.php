@@ -1,8 +1,8 @@
 <?php
     // SENDGRID API KEY
-    define("SENDGRID_API_KEY", "YOUR SENDGRID API KEY");
-    define("SENDGRID_NAME", "Karimganj College Attendance System");
-    define("SENDGRID_EMAIL", "hrikdas012@gmail.com");
+    define("SENDGRID_API_KEY", "YOUR API KEY");
+    define("SENDGRID_NAME", "YOUR COLLEGE OR ORGANISATION NAME");
+    define("SENDGRID_EMAIL", "YOUR SENDGRID MAIL API REGISTERED EMAIL ADDRESS");
 
     /**
     * Displays an alert message with specified type and content using Bootstrap classes.

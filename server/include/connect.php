@@ -2,7 +2,7 @@
     // Establish a connection to the MySQL database
     $hostname = "localhost";
     $username = "root";
-    $password = "12345";
+    $password = "";
     $database = "attendance";
     $connect = mysqli_connect($hostname, $username, $password, $database);
     if(!$connect){    // Check if the connection was successful
