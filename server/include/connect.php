@@ -33,9 +33,9 @@
     */
     function selectAllData($table){
         $connect = $GLOBALS["connect"];    // Use global connection
-        $query = "SELECT * FROM `$$table`";    // Construct the SQL query
+        $query = "SELECT * FROM `$table`";    // Construct the SQL query
         $result = mysqli_query($connect, $query);
-        if($result){    // Check if the query execution was successful
+        if(!$result){    // Check if the query execution was successful
             return false;    // Return false if there was an error
         }
         return $result;    // Return the mysqli_result object
